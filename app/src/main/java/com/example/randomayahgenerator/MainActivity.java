@@ -2,7 +2,10 @@ package com.example.randomayahgenerator;
 
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,10 +19,13 @@ import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
+    private DatabaseHelper databaseHelper;
     private NavigationView rightNavigationView;
     private ImageView rightNavigationDrawerIcon;
     private GestureDetectorCompat gestureDetector;
     private HandleSwipeAndDrawers handleSwipeAndDrawers;
+    private TextView noAyahFoundText, generationTypeHintText;
+    private Button addAyahButton, randomGenerationButton, manualGenerationButton;
     private HandleNavigationDrawersVisibility handleNavigationDrawersVisibility;
 
     @Override
@@ -37,12 +43,20 @@ public class MainActivity extends AppCompatActivity {
         instantiateObjects();
 
         handleNavigationDrawersVisibility.setNavigationDrawerListeners();
+        checkIfTableIsNotEmpty();
     }
 
     private void instantiateViews() {
         drawerLayout = findViewById(R.id.drawerLayout);
         rightNavigationView = findViewById(R.id.rightNavigationDrawer);
         rightNavigationDrawerIcon = findViewById(R.id.rightNavigationDrawerIcon);
+
+        noAyahFoundText = findViewById(R.id.noAyahFoundText);
+        generationTypeHintText = findViewById(R.id.generationTypeHintText);
+
+        addAyahButton = findViewById(R.id.addAyahButton);
+        randomGenerationButton = findViewById(R.id.randomGenerationButton);
+        manualGenerationButton = findViewById(R.id.manualGenerationButton);
     }
 
     private void instantiateObjects() {
@@ -56,6 +70,25 @@ public class MainActivity extends AppCompatActivity {
                 this,
                 handleSwipeAndDrawers
         );
+        databaseHelper = new DatabaseHelper(this);
+    }
+
+    private void checkIfTableIsNotEmpty() {
+        if (databaseHelper.isTableNotEmpty()) {
+            noAyahFoundText.setVisibility(View.GONE);
+            generationTypeHintText.setVisibility(View.VISIBLE);
+
+            addAyahButton.setVisibility(View.GONE);
+            randomGenerationButton.setVisibility(View.VISIBLE);
+            manualGenerationButton.setVisibility(View.VISIBLE);
+        } else {
+            noAyahFoundText.setVisibility(View.VISIBLE);
+            generationTypeHintText.setVisibility(View.GONE);
+
+            addAyahButton.setVisibility(View.VISIBLE);
+            randomGenerationButton.setVisibility(View.GONE);
+            manualGenerationButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
