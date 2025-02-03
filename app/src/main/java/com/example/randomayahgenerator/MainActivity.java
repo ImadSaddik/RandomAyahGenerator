@@ -1,12 +1,13 @@
 package com.example.randomayahgenerator;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
-import androidx.core.view.GravityCompat;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -17,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView rightNavigationView;
     private ImageView rightNavigationDrawerIcon;
+    private GestureDetectorCompat gestureDetector;
+    private HandleSwipeAndDrawers handleSwipeAndDrawers;
     private HandleNavigationDrawersVisibility handleNavigationDrawersVisibility;
 
     @Override
@@ -48,5 +51,16 @@ public class MainActivity extends AppCompatActivity {
             rightNavigationView,
             drawerLayout
         );
+        handleSwipeAndDrawers = new HandleSwipeAndDrawers(drawerLayout);
+        gestureDetector = new GestureDetectorCompat(
+                this,
+                handleSwipeAndDrawers
+        );
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        gestureDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
     }
 }
