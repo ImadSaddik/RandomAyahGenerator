@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RandomAyahGenerator</string>
+    <string name="app_name_arabic">مُوَلِّدُ آيَاتٍ عَشْوَائِيّ</string>
+    <string name="right_navigation_icon_content_description">This icon opens the right navigation drawer</string>
 </resources>
