@@ -7,4 +7,5 @@
     <string name="manual_generation_button">تَوْلِيدٌ يَدَوِيٌّ</string>
     <string name="no_ayah_found">لَا تُوجَدُ أَيُّ آيَةٍ فِي قَاعِدَةِ الْبَيَانَاتِ ، ابْدَأْ بِإِضَافَةِ آيَتَيْنِ عَلَى الْأَقَلِّ فِي قَاعِدَةِ الْبَيَانَاتِ.</string>
     <string name="add_ayah_button">إِضَافَةُ آيَةٍ</string>
+    <string name="side_panel_header_text">اللَّوْحَةُ الْجَانِبِيَّةُ</string>
 </resources>
