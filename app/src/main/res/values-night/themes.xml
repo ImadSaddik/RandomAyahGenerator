@@ -14,5 +14,21 @@
         <!-- Customize your theme here. -->
 
         <item name="textPrimaryColor">@color/white</item>
+        <item name="backgroundColor">@color/background_color_dark</item>
+        <item name="iconColor">@color/icon_color_dark</item>
+        <item name="textSecondaryColor">@color/text_emphasis_color_dark</item>
+        <item name="buttonBackgroundColor">@color/button_background_color_light</item>
+
+        <!-- Custom styles-->
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+    </style>
+
+    <style name="Widget.App.Button" parent="Widget.Material3.Button">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button" parent="">
+        <item name="colorContainer">?attr/buttonBackgroundColor</item>
+        <item name="colorOnContainer">@color/white</item>
     </style>
 </resources>

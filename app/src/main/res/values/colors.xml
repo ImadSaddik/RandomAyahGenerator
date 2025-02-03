@@ -8,15 +8,17 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="button_text_color">#FFFFFFFF</color>
+    <color name="text_emphasis_color_light">#b3b3b3</color>
+    <color name="text_emphasis_color_dark">#808080</color>
 
-    <color name="button_background_color_light">#292d32FF</color>
-    <color name="button_background_color_dark">#3d4247FF</color>
+    <color name="button_text_color">#FFFFFF</color>
 
-    <color name="icon_color_light">#292d32FF</color>
-    <color name="icon_color_dark">#FFFFFFFF</color>
+    <color name="button_background_color_light">#292d32</color>
+    <color name="button_background_color_dark">#3d4247</color>
 
-    <color name="background_color_light">#f9f9f9FF</color>
-    <color name="background_color_dark">#1a1a1aFF</color>
+    <color name="icon_color_light">#292d32</color>
+    <color name="icon_color_dark">#FFFFFF</color>
 
+    <color name="background_color_light">#f9f9f9</color>
+    <color name="background_color_dark">#1a1a1a</color>
 </resources>
