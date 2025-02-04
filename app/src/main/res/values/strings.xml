@@ -13,4 +13,6 @@
     <string name="surah_dropdown_hint">اِخْتَرْ سُورَةً</string>
     <string name="ayah_dropdown_hint">اِخْتَرْ آيَةً</string>
     <string name="close_modal_icon_description">Close modal</string>
+    <string name="repeat">أَعِدْ</string>
+    <string name="ayah_prefix">رَقْمُ الْآيَةِ</string>
 </resources>
