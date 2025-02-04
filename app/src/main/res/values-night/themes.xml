@@ -15,11 +15,13 @@
 
         <item name="textPrimaryColor">@color/white</item>
         <item name="backgroundColor">@color/background_color_dark</item>
+        <item name="sideBarHeaderBackgroundColor">@color/side_bar_header_background_color_dark</item>
         <item name="iconColor">@color/icon_color_dark</item>
         <item name="textSecondaryColor">@color/text_emphasis_color_dark</item>
         <item name="buttonBackgroundColor">@color/button_background_color_light</item>
         <item name="dialogBackgroundColor">@color/dialog_background_color_dark</item>
         <item name="ayahCardBackgroundColor">@color/ayah_card_background_color_dark</item>
+        <item name="faintStroke">@color/faint_stroke_dark</item>
 
         <!-- Custom styles-->
         <item name="materialButtonStyle">@style/Widget.App.Button</item>

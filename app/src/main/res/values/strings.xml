@@ -15,4 +15,10 @@
     <string name="close_modal_icon_description">Close modal</string>
     <string name="repeat">أَعِدْ</string>
     <string name="ayah_prefix">رَقْمُ الْآيَةِ</string>
+    <string name="view_data">الِاطِّلَاعُ عَلَى الْبَيَانَاتِ</string>
+    <string name="save_data">حِفْظُ الْبَيَانَاتِ</string>
+    <string name="load_data">تَحْمِيلُ الْبَيَانَاتِ</string>
+    <string name="delete_data">حَذْفُ الْبَيَانَاتِ</string>
+    <string name="dashboard">لوحَةُ الْمَعَارِضِ</string>
+    <string name="settings">الإِعْدَادَاتُ</string>
 </resources>

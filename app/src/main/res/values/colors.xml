@@ -22,6 +22,9 @@
     <color name="background_color_light">#f9f9f9</color>
     <color name="background_color_dark">#1a1a1a</color>
 
+    <color name="side_bar_header_background_color_light">#eeeeee</color>
+    <color name="side_bar_header_background_color_dark">#1a1a1a</color>
+
     <color name="dialog_background_color_light">#FFFFFF</color>
     <color name="dialog_background_color_dark">#1f2324</color>
 
@@ -30,4 +33,7 @@
 
     <color name="ayah_card_background_color_light">#FFFFFF</color>
     <color name="ayah_card_background_color_dark">#1f2324</color>
+
+    <color name="faint_stroke_light">#27000000</color>
+    <color name="faint_stroke_dark">#27FFFFFF</color>
 </resources>
