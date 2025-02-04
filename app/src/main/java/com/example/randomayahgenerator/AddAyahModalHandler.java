@@ -49,7 +49,7 @@ public class AddAyahModalHandler {
 
         // Populate the surah dropdown with the list of surah names
         List<String> surahNames = quranDatabaseHelper.getListOfSurahNames();
-        ArrayAdapter<String> surahAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_dropdown_item_1line, surahNames);
+        ArrayAdapter<String> surahAdapter = new ArrayAdapter<>(activity, R.layout.my_1_line_dropdown_item, surahNames);
         surahDropdown.setAdapter(surahAdapter);
 
         // Populate the ayah dropdown with the list of ayah numbers for the selected surah
@@ -64,7 +64,7 @@ public class AddAyahModalHandler {
             addAyahButton.setEnabled(false);
             ayahTextInputLayout.setVisibility(View.VISIBLE);
 
-            ArrayAdapter<Integer> ayahAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_dropdown_item_1line, ayahNumbers);
+            ArrayAdapter<Integer> ayahAdapter = new ArrayAdapter<>(activity, R.layout.my_1_line_dropdown_item, ayahNumbers);
             ayahDropdown.setAdapter(ayahAdapter);
         });
 
