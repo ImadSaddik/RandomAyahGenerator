@@ -27,4 +27,7 @@
 
     <color name="dropdown_stroke_color_light">#000000</color>
     <color name="dropdown_stroke_color_dark">#FFFFFF</color>
+
+    <color name="ayah_card_background_color_light">#FFFFFF</color>
+    <color name="ayah_card_background_color_dark">#1f2324</color>
 </resources>

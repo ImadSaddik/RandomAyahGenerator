@@ -7,4 +7,5 @@
     <attr name="buttonBackgroundColor" format="color" />
     <attr name="dialogBackgroundColor" format="color" />
     <attr name="dropDownStrokeColor" format="color" />
+    <attr name="ayahCardBackgroundColor" format="color" />
 </resources>
