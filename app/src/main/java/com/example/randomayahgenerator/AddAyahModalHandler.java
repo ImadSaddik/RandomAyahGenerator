@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +38,14 @@ public class AddAyahModalHandler {
         View view = layoutInflater.inflate(R.layout.add_ayah_dialog, null);
         AutoCompleteTextView surahDropdown = view.findViewById(R.id.surahDropdown);
         AutoCompleteTextView ayahDropdown = view.findViewById(R.id.ayahDropdown);
+        TextInputLayout ayahTextInputLayout = view.findViewById(R.id.ayahLayout);
         TextView ayahTextView = view.findViewById(R.id.ayahPreviewTextView);
         ImageView closeModalIcon = view.findViewById(R.id.closeAddAyahModalIcon);
         TextView addAyahButton = view.findViewById(R.id.addAyahButtonModal);
+
+
         addAyahButton.setEnabled(false);
+        ayahTextInputLayout.setVisibility(View.GONE);
 
         // Populate the surah dropdown with the list of surah names
         List<String> surahNames = quranDatabaseHelper.getListOfSurahNames();
@@ -56,6 +62,7 @@ public class AddAyahModalHandler {
             ayahDropdown.setText("");
             ayahTextView.setText("");
             addAyahButton.setEnabled(false);
+            ayahTextInputLayout.setVisibility(View.VISIBLE);
 
             ArrayAdapter<Integer> ayahAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_dropdown_item_1line, ayahNumbers);
             ayahDropdown.setAdapter(ayahAdapter);
