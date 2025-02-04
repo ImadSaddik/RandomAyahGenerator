@@ -43,12 +43,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // For now, there is no need to upgrade the database.
     }
 
-    public void addAyah(String ayah, int ayahNumber, String sura) {
+    public void addAyah(String ayah, int ayahNumber, String surah) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_AYAH, ayah);
         values.put(COLUMN_AYAH_NUMBER, ayahNumber);
-        values.put(COLUMN_SURA, sura);
+        values.put(COLUMN_SURA, surah);
         db.insert(TABLE_NAME, null, values);
         db.close();
     }
