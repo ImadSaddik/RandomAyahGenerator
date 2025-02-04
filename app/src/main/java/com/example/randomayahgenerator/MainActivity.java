@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView rightNavigationView;
     private ImageView rightNavigationDrawerIcon;
     private GestureDetectorCompat gestureDetector;
+    private AddAyahModalHandler addAyahModalHandler;
     private HandleSwipeAndDrawers handleSwipeAndDrawers;
     private TextView noAyahFoundText, generationTypeHintText;
     private Button addAyahButton, randomGenerationButton, manualGenerationButton;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateViews();
         instantiateObjects();
+        setClickListeners();
 
         handleNavigationDrawersVisibility.setNavigationDrawerListeners();
         checkIfTableIsNotEmpty();
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 handleSwipeAndDrawers
         );
         databaseHelper = new DatabaseHelper(this);
+        addAyahModalHandler = new AddAyahModalHandler(this);
     }
 
     private void checkIfTableIsNotEmpty() {
@@ -89,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
             randomGenerationButton.setVisibility(View.GONE);
             manualGenerationButton.setVisibility(View.GONE);
         }
+    }
+
+    private void setClickListeners() {
+        addAyahButton.setOnClickListener(v -> addAyahModalHandler.showModal());
     }
 
     @Override
