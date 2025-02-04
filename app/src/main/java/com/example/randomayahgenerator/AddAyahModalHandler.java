@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -76,6 +77,7 @@ public class AddAyahModalHandler {
             String ayahText = ayahTextView.getText().toString();
 
             databaseHelper.addAyah(ayahText, ayahNumber, surah);
+            Toast.makeText(activity, "Ayah added successfully", Toast.LENGTH_SHORT).show();
             hideDialog(dialog);
         });
 
