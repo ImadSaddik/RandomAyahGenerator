@@ -22,6 +22,7 @@
         <item name="dialogBackgroundColor">@color/dialog_background_color_dark</item>
         <item name="ayahCardBackgroundColor">@color/ayah_card_background_color_dark</item>
         <item name="faintStroke">@color/faint_stroke_dark</item>
+        <item name="pressedState">@color/pressed_state_dark</item>
 
         <!-- Custom styles-->
         <item name="materialButtonStyle">@style/Widget.App.Button</item>

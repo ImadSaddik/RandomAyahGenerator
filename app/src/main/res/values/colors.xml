@@ -36,4 +36,7 @@
 
     <color name="faint_stroke_light">#27000000</color>
     <color name="faint_stroke_dark">#27FFFFFF</color>
+
+    <color name="pressed_state_light">#e6e6e6</color>
+    <color name="pressed_state_dark">#282828</color>
 </resources>
