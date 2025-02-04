@@ -99,11 +99,10 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
     public List<Map<String, Object>> getRandomAyahs(int count) {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
-        Random random = new Random();
 
         for (int i = 0; i < count; i++) {
-            Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " +
-                    COLUMN_ID + " = (SELECT MAX(" + COLUMN_ID + ") * RANDOM() + 1 FROM " + TABLE_NAME + ")", null);
+            String sqlQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY RANDOM() LIMIT " + count;
+            Cursor cursor = db.rawQuery(sqlQuery, null);
 
             if (cursor != null && cursor.moveToFirst()) {
                 Map<String, Object> row = new HashMap<>();
