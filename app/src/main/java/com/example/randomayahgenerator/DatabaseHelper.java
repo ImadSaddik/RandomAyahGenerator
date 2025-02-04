@@ -112,11 +112,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 int count = cursor.getInt(0);
-                hasAtLeast2Records = count > 2;
+                hasAtLeast2Records = count > 1;
             }
             cursor.close();
         }
         db.close();
         return hasAtLeast2Records;
+    }
+
+    public void deleteAllRowsFromTable() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NAME, null, null);
+        db.close();
     }
 }
