@@ -105,18 +105,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public boolean isTableNotEmpty() {
+    public boolean isTableContainingAtLeast2Records() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME, null);
-        boolean hasRecords = false;
+        boolean hasAtLeast2Records = false;
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 int count = cursor.getInt(0);
-                hasRecords = count > 0;
+                hasAtLeast2Records = count > 2;
             }
             cursor.close();
         }
         db.close();
-        return hasRecords;
+        return hasAtLeast2Records;
     }
 }

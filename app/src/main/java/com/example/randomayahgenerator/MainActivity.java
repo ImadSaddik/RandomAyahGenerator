@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkIfTableIsNotEmpty() {
-        if (databaseHelper.isTableNotEmpty()) {
+        if (databaseHelper.isTableContainingAtLeast2Records()) {
             noAyahFoundText.setVisibility(View.GONE);
             generationTypeHintText.setVisibility(View.VISIBLE);
 
