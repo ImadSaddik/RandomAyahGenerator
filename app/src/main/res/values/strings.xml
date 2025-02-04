@@ -8,4 +8,9 @@
     <string name="no_ayah_found">لَا تُوجَدُ أَيُّ آيَةٍ فِي قَاعِدَةِ الْبَيَانَاتِ ، ابْدَأْ بِإِضَافَةِ آيَتَيْنِ عَلَى الْأَقَلِّ فِي قَاعِدَةِ الْبَيَانَاتِ.</string>
     <string name="add_ayah_button">إِضَافَةُ آيَةٍ</string>
     <string name="side_panel_header_text">اللَّوْحَةُ الْجَانِبِيَّةُ</string>
+    <string name="modal_title">أَضِفْ آيَةً</string>
+    <string name="modal_add_button">أَضِفْ</string>
+    <string name="surah_dropdown_hint">اِخْتَرْ سُورَةً</string>
+    <string name="ayah_dropdown_hint">اِخْتَرْ آيَةً</string>
+    <string name="close_modal_icon_description">Close modal</string>
 </resources>

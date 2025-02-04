@@ -5,4 +5,5 @@
     <attr name="backgroundColor" format="color" />
     <attr name="iconColor" format="color" />
     <attr name="buttonBackgroundColor" format="color" />
+    <attr name="dialogBackgroundColor" format="color" />
 </resources>

@@ -21,4 +21,7 @@
 
     <color name="background_color_light">#f9f9f9</color>
     <color name="background_color_dark">#1a1a1a</color>
+
+    <color name="dialog_background_color_light">#FFFFFF</color>
+    <color name="dialog_background_color_dark">#1f2324</color>
 </resources>

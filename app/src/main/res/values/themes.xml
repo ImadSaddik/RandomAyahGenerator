@@ -17,6 +17,7 @@
         <item name="iconColor">@color/icon_color_light</item>
         <item name="textSecondaryColor">@color/text_emphasis_color_light</item>
         <item name="buttonBackgroundColor">@color/button_background_color_light</item>
+        <item name="dialogBackgroundColor">@color/dialog_background_color_light</item>
 
         <!-- Custom styles-->
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
