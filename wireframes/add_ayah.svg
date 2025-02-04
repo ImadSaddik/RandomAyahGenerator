@@ -25,9 +25,9 @@
      inkscape:document-units="px"
      labelstyle="default"
      inkscape:clip-to-page="false"
-     inkscape:zoom="0.18539561"
-     inkscape:cx="2284.3043"
-     inkscape:cy="2300.4859"
+     inkscape:zoom="0.52437798"
+     inkscape:cx="2859.5785"
+     inkscape:cy="1118.468"
      inkscape:window-width="1920"
      inkscape:window-height="1131"
      inkscape:window-x="0"
@@ -544,7 +544,10 @@
          y="176.85492">أَضِفْ آيَةً</tspan></text><g
        style="fill:none"
        id="g41"
-       transform="matrix(1.0369942,0,0,1.0369942,630.38148,156.1814)"><path
+       transform="matrix(1.0369942,0,0,1.0369942,630.38148,156.1814)"
+       inkscape:export-filename="/home/imad-saddik/Downloads/close_modal.svg"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"><path
          d="M 9.16998,14.83 14.83,9.17004"
          stroke="#292d32"
          stroke-width="1.5"
