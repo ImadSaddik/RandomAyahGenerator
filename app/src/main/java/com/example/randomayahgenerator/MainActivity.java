@@ -1,10 +1,12 @@
 package com.example.randomayahgenerator;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,17 +19,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.List;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity implements OnAyahAddedListener {
     private DrawerLayout drawerLayout;
-    private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
     private NavigationView rightNavigationView;
     private ImageView rightNavigationDrawerIcon;
     private GestureDetectorCompat gestureDetector;
+    private LinearLayout generatedAyahsContainer;
     private AddAyahModalHandler addAyahModalHandler;
-    private HandleSwipeAndDrawers handleSwipeAndDrawers;
     private TextView noAyahFoundText, generationTypeHintText;
-    private Button addAyahButton, randomGenerationButton, manualGenerationButton;
+    private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
     private HandleNavigationDrawersVisibility handleNavigationDrawersVisibility;
+    private Button addAyahButton, randomGenerationButton, manualGenerationButton, repeatGenerationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
         addAyahButton = findViewById(R.id.addAyahButton);
         randomGenerationButton = findViewById(R.id.randomGenerationButton);
         manualGenerationButton = findViewById(R.id.manualGenerationButton);
+        repeatGenerationButton = findViewById(R.id.repeatGenerationButton);
+
+        generatedAyahsContainer = findViewById(R.id.generatedAyahsContainer);
     }
 
     private void instantiateObjects() {
@@ -78,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
             rightNavigationView,
             drawerLayout
         );
-        handleSwipeAndDrawers = new HandleSwipeAndDrawers(drawerLayout);
+        HandleSwipeAndDrawers handleSwipeAndDrawers = new HandleSwipeAndDrawers(drawerLayout);
         gestureDetector = new GestureDetectorCompat(
                 this,
                 handleSwipeAndDrawers
@@ -107,8 +115,55 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
 
     private void setClickListeners() {
         addAyahButton.setOnClickListener(v -> addAyahModalHandler.showModal());
-        randomGenerationButton.setOnClickListener(v -> {
+        repeatGenerationButton.setOnClickListener(v -> {
+            generationTypeHintText.setVisibility(View.VISIBLE);
+            randomGenerationButton.setVisibility(View.VISIBLE);
+            manualGenerationButton.setVisibility(View.VISIBLE);
+            repeatGenerationButton.setVisibility(View.GONE);
 
+            generatedAyahsContainer.removeAllViews();
         });
+        randomGenerationButton.setOnClickListener(v -> {
+            generationTypeHintText.setVisibility(View.GONE);
+            randomGenerationButton.setVisibility(View.GONE);
+            manualGenerationButton.setVisibility(View.GONE);
+            repeatGenerationButton.setVisibility(View.VISIBLE);
+
+            List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getRandomAyahs(2);
+            for (int i = 0; i < rows.size(); i++) {
+                View ayahCard = getAyahCard(rows.get(i));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                if (i > 0) {
+                    params.topMargin = 32;
+                }
+
+                ayahCard.setLayoutParams(params);
+                generatedAyahsContainer.addView(ayahCard);
+
+            }
+        });
+    }
+
+    private View getAyahCard(Map<String, Object> row) {
+        LayoutInflater layoutInflater = getLayoutInflater();
+        View ayahCardView = layoutInflater.inflate(R.layout.generated_ayah_card, null);
+
+        TextView ayahCardTitle = ayahCardView.findViewById(R.id.ayahCardTitle);
+        String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURA).toString();
+        ayahCardTitle.setText(surah);
+
+        TextView ayahCardSubTitle = ayahCardView.findViewById(R.id.ayahCardSubTitle);
+        String ayahNumber = row.get(BookmarkedAyahDatabaseHelper.COLUMN_AYAH_NUMBER).toString();
+        String subtitle = getString(R.string.ayah_prefix) + ": " + ayahNumber;
+        ayahCardSubTitle.setText(subtitle);
+
+        TextView ayahCardContent = ayahCardView.findViewById(R.id.ayahCardContent);
+        String ayah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_AYAH).toString();
+        ayahCardContent.setText(ayah);
+
+        return ayahCardView;
     }
 }
