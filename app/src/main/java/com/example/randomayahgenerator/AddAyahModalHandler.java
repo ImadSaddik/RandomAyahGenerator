@@ -19,11 +19,13 @@ public class AddAyahModalHandler {
     private boolean isModalOpen = false;
     private DatabaseHelper databaseHelper;
     private QuranDatabaseHelper quranDatabaseHelper;
+    private OnAyahAddedListener ayahAddedListener;
 
-    public AddAyahModalHandler(Activity activity) {
+    public AddAyahModalHandler(Activity activity, OnAyahAddedListener ayahAddedListener) {
         this.activity = activity;
         this.quranDatabaseHelper = new QuranDatabaseHelper(this.activity);
         this.databaseHelper = new DatabaseHelper(this.activity);
+        this.ayahAddedListener = ayahAddedListener;
     }
 
     public void showModal() {
@@ -77,8 +79,8 @@ public class AddAyahModalHandler {
             String ayahText = ayahTextView.getText().toString();
 
             databaseHelper.addAyah(ayahText, ayahNumber, surah);
-            Toast.makeText(activity, "Ayah added successfully", Toast.LENGTH_SHORT).show();
             hideDialog(dialog);
+            Toast.makeText(activity, "Ayah added successfully", Toast.LENGTH_SHORT).show();
         });
 
         // Show the dialog
@@ -99,5 +101,8 @@ public class AddAyahModalHandler {
     private void hideDialog(AlertDialog dialog) {
         dialog.dismiss();
         isModalOpen = false;
+        if (ayahAddedListener != null) {
+            ayahAddedListener.onAyahAdded();
+        }
     }
 }

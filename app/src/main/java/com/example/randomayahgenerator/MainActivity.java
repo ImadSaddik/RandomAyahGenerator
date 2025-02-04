@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnAyahAddedListener {
     private DrawerLayout drawerLayout;
     private DatabaseHelper databaseHelper;
     private NavigationView rightNavigationView;
@@ -45,7 +46,18 @@ public class MainActivity extends AppCompatActivity {
         setClickListeners();
 
         handleNavigationDrawersVisibility.setNavigationDrawerListeners();
-        checkIfTableIsNotEmpty();
+        showButtonsBasedOnTheRowCount();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        gestureDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public void onAyahAdded() {
+        showButtonsBasedOnTheRowCount();
     }
 
     private void instantiateViews() {
@@ -73,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
                 handleSwipeAndDrawers
         );
         databaseHelper = new DatabaseHelper(this);
-        addAyahModalHandler = new AddAyahModalHandler(this);
+        addAyahModalHandler = new AddAyahModalHandler(this, this);
     }
 
-    private void checkIfTableIsNotEmpty() {
+    public void showButtonsBasedOnTheRowCount() {
         if (databaseHelper.isTableContainingAtLeast2Records()) {
             noAyahFoundText.setVisibility(View.GONE);
             generationTypeHintText.setVisibility(View.VISIBLE);
@@ -96,11 +108,5 @@ public class MainActivity extends AppCompatActivity {
 
     private void setClickListeners() {
         addAyahButton.setOnClickListener(v -> addAyahModalHandler.showModal());
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        gestureDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
     }
 }
