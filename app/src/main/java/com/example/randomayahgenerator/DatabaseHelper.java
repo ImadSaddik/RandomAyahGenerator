@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,9 +22,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_SURA = "sura";
     public static final String COLUMN_PLAY_COUNT = "play_count";
     public static final String COLUMN_ID = "_id";
+    private Context context;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -45,11 +48,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void addAyah(String ayah, int ayahNumber, String surah) {
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_AYAH, ayah);
-        values.put(COLUMN_AYAH_NUMBER, ayahNumber);
-        values.put(COLUMN_SURA, surah);
-        db.insert(TABLE_NAME, null, values);
+        String[] selectionArgs = new String[]{ayah, String.valueOf(ayahNumber), surah};
+        Cursor cursor = db.query(
+                TABLE_NAME,
+                null,
+                COLUMN_AYAH + " = ? AND " + COLUMN_AYAH_NUMBER + " = ? AND " + COLUMN_SURA + " = ?",
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        boolean ifRowExists = cursor.getCount() != 0;
+        if (!ifRowExists) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_AYAH, ayah);
+            values.put(COLUMN_AYAH_NUMBER, ayahNumber);
+            values.put(COLUMN_SURA, surah);
+            db.insert(TABLE_NAME, null, values);
+            Toast.makeText(this.context, "Ayah added successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this.context, "Ayah already exists!", Toast.LENGTH_SHORT).show();
+        }
+
+        cursor.close();
         db.close();
     }
 
