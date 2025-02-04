@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +19,7 @@ import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements OnAyahAddedListener {
     private DrawerLayout drawerLayout;
-    private DatabaseHelper databaseHelper;
+    private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
     private NavigationView rightNavigationView;
     private ImageView rightNavigationDrawerIcon;
     private GestureDetectorCompat gestureDetector;
@@ -84,12 +83,12 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
                 this,
                 handleSwipeAndDrawers
         );
-        databaseHelper = new DatabaseHelper(this);
+        bookmarkedAyahDatabaseHelper = new BookmarkedAyahDatabaseHelper(this);
         addAyahModalHandler = new AddAyahModalHandler(this, this);
     }
 
     public void showButtonsBasedOnTheRowCount() {
-        if (databaseHelper.isTableContainingAtLeast2Records()) {
+        if (bookmarkedAyahDatabaseHelper.isTableContainingAtLeast2Records()) {
             noAyahFoundText.setVisibility(View.GONE);
             generationTypeHintText.setVisibility(View.VISIBLE);
 
@@ -108,5 +107,8 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
 
     private void setClickListeners() {
         addAyahButton.setOnClickListener(v -> addAyahModalHandler.showModal());
+        randomGenerationButton.setOnClickListener(v -> {
+
+        });
     }
 }

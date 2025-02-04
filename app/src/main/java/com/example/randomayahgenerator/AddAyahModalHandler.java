@@ -18,14 +18,14 @@ import java.util.List;
 public class AddAyahModalHandler {
     private Activity activity;
     private boolean isModalOpen = false;
-    private DatabaseHelper databaseHelper;
+    private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
     private QuranDatabaseHelper quranDatabaseHelper;
     private OnAyahAddedListener ayahAddedListener;
 
     public AddAyahModalHandler(Activity activity, OnAyahAddedListener ayahAddedListener) {
         this.activity = activity;
         this.quranDatabaseHelper = new QuranDatabaseHelper(this.activity);
-        this.databaseHelper = new DatabaseHelper(this.activity);
+        this.bookmarkedAyahDatabaseHelper = new BookmarkedAyahDatabaseHelper(this.activity);
         this.ayahAddedListener = ayahAddedListener;
     }
 
@@ -84,7 +84,7 @@ public class AddAyahModalHandler {
             int ayahNumber = Integer.parseInt(ayahDropdown.getText().toString());
             String ayahText = ayahTextView.getText().toString();
 
-            databaseHelper.addAyah(ayahText, ayahNumber, surah);
+            bookmarkedAyahDatabaseHelper.addAyah(ayahText, ayahNumber, surah);
             hideDialog(dialog);
         });
 

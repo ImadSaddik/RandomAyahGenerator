@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "quran_data.db";
     public static final int DATABASE_VERSION = 1;
     public static final String TABLE_NAME = "ayahs";
@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "_id";
     private Context context;
 
-    public DatabaseHelper(Context context) {
+    public BookmarkedAyahDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
