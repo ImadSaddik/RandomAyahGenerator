@@ -46,6 +46,7 @@
             android:fontFamily="@font/roboto"
             android:hint="@string/surah_dropdown_hint"
             android:inputType="none"
+            android:popupBackground="@drawable/custom_dropdown_background"
             android:textColor="?attr/textPrimaryColor" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,6 +64,7 @@
             android:fontFamily="@font/roboto"
             android:hint="@string/ayah_dropdown_hint"
             android:inputType="none"
+            android:popupBackground="@drawable/custom_dropdown_background"
             android:textColor="?attr/textPrimaryColor" />
     </com.google.android.material.textfield.TextInputLayout>
 
