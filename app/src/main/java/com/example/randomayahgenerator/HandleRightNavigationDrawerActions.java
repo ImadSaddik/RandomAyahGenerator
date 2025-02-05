@@ -1,6 +1,7 @@
 package com.example.randomayahgenerator;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -55,6 +56,12 @@ public class HandleRightNavigationDrawerActions {
     }
 
     public void setViewDashboardClickListener() {
+        View leftHeaderView = this.navigationView.getHeaderView(0);
+        LinearLayout viewDashboardButton = leftHeaderView.findViewById(R.id.viewDataAction);
 
+        viewDashboardButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this.activity, ViewDataActivity.class);
+            this.activity.startActivity(intent);
+        });
     }
 }
