@@ -24,9 +24,9 @@ public class AddAyahModalHandler {
 
     public AddAyahModalHandler(Activity activity, OnDatabaseActionsListener onDatabaseActionsListener) {
         this.activity = activity;
+        this.onDatabaseActionsListener = onDatabaseActionsListener;
         this.quranDatabaseHelper = new QuranDatabaseHelper(this.activity);
         this.bookmarkedAyahDatabaseHelper = new BookmarkedAyahDatabaseHelper(this.activity);
-        this.onDatabaseActionsListener = onDatabaseActionsListener;
     }
 
     public void showModal() {

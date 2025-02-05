@@ -76,15 +76,26 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     }
 
     @Override
+    public void onSpecificRowDeleted() {
+        showButtonsBasedOnTheRowCount();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Toast.makeText(this, "Back", Toast.LENGTH_SHORT).show();
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Log.d("SIGN_IN_TAG", "onActivityResult inside: " + requestCode + " " + resultCode);
-            if (requestCode != 1) {
+            if (requestCode == ResultCodes.REQUEST_CODE_SAVE_DATABASE || requestCode == ResultCodes.REQUEST_CODE_LOAD_DATABASE) {
                 handleDatabaseAction(requestCode, data);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showButtonsBasedOnTheRowCount();
     }
 
     private void instantiateViews() {
@@ -208,11 +219,11 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     }
 
     private void handleDatabaseAction(int requestCode, Intent data) {
-        if (requestCode == DatabaseUtils.REQUEST_CODE_SAVE_DATABASE) {
+        if (requestCode == ResultCodes.REQUEST_CODE_SAVE_DATABASE) {
             Uri destinationUri = data.getData();
             DatabaseUtils.saveDatabase(this, destinationUri);
             this.drawerLayout.closeDrawer(this.rightNavigationView);
-        } else if (requestCode == DatabaseUtils.REQUEST_CODE_LOAD_DATABASE) {
+        } else if (requestCode == ResultCodes.REQUEST_CODE_LOAD_DATABASE) {
             Uri sourceUri = data.getData();
             DatabaseUtils.loadDatabase(this, sourceUri);
             this.drawerLayout.closeDrawer(this.rightNavigationView);
