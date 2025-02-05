@@ -22,4 +22,5 @@
     <string name="dashboard">لوحَةُ الْمَعَارِضِ</string>
     <string name="settings">الإِعْدَادَاتُ</string>
     <string name="displaying_data">عَرْضُ الْبَيَانَاتِ</string>
+    <string name="no_data_in_database">لَا تُوجَدُ أَيُّ آيَةٍ فِي قَاعِدَةِ الْبَيَانَاتِ.</string>
 </resources>
