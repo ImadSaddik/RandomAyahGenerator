@@ -177,34 +177,5 @@
                 app:srcCompat="@drawable/dashboard_icon" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/settingsAction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/clickable_background"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="@font/roboto_medium"
-                android:text="@string/settings"
-                android:textColor="?attr/textPrimaryColor"
-                android:textSize="16sp" />
-
-            <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="24dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                app:srcCompat="@drawable/settings_icon" />
-        </LinearLayout>
-
     </LinearLayout>
 </RelativeLayout>
