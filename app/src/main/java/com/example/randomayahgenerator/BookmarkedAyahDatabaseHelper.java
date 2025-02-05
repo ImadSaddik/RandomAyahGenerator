@@ -119,10 +119,13 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
-    public void incrementPlayCount(int ayahNumber) {
+    public void incrementPlayCount(String surah, int ayahNumber) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("UPDATE " + TABLE_NAME + " SET " + COLUMN_PLAY_COUNT +
-                " = " + COLUMN_PLAY_COUNT + " + 1 WHERE " + COLUMN_AYAH_NUMBER + " = " + ayahNumber);
+        String sqlQuery = "UPDATE " + TABLE_NAME +
+                " SET " + COLUMN_PLAY_COUNT + " = " + COLUMN_PLAY_COUNT + " + 1" +
+                " WHERE " + COLUMN_AYAH_NUMBER + " = " + ayahNumber +
+                " AND " + COLUMN_SURA + " = '" + surah + "'";
+        db.execSQL(sqlQuery);
         db.close();
     }
 

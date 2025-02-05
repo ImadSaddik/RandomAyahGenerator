@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
                 ayahCard.setLayoutParams(params);
                 generatedAyahsContainer.addView(ayahCard);
-
+                incrementPlayCount(rows.get(i));
             }
         });
     }
@@ -199,6 +199,12 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         ayahCardContent.setText(ayah);
 
         return ayahCardView;
+    }
+
+    private void incrementPlayCount(Map<String, Object> row) {
+        String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURA).toString();
+        int ayahNumber = Integer.parseInt(row.get(BookmarkedAyahDatabaseHelper.COLUMN_AYAH_NUMBER).toString());
+        bookmarkedAyahDatabaseHelper.incrementPlayCount(surah, ayahNumber);
     }
 
     private void handleDatabaseAction(int requestCode, Intent data) {
