@@ -43,7 +43,6 @@ public class AddAyahModalHandler {
         ImageView closeModalIcon = view.findViewById(R.id.closeAddAyahModalIcon);
         TextView addAyahButton = view.findViewById(R.id.addAyahButtonModal);
 
-
         addAyahButton.setEnabled(false);
         ayahTextInputLayout.setVisibility(View.GONE);
 
