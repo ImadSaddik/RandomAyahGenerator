@@ -119,6 +119,27 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
+    public List<Map<String, Object>> getAllAyahs() {
+        SQLiteDatabase db = getReadableDatabase();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
+                row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
+                row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
+                row.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
+                row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
+                results.add(row);
+                }
+            cursor.close();
+        }
+        db.close();
+        return results;
+    }
+
     public void incrementPlayCount(String surah, int ayahNumber) {
         SQLiteDatabase db = getWritableDatabase();
         String sqlQuery = "UPDATE " + TABLE_NAME +
@@ -147,6 +168,13 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
     public void deleteAllRowsFromTable() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NAME, null, null);
+        db.close();
+    }
+
+    public void deleteRowById(int rowId) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] selectedArgs = new String[]{String.valueOf(rowId)};
+        db.delete(TABLE_NAME, COLUMN_ID + " = ?", selectedArgs);
         db.close();
     }
 }
