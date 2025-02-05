@@ -13,9 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class DatabaseUtils {
-    public static final int REQUEST_CODE_SAVE_DATABASE = 111;
-    public static final int REQUEST_CODE_LOAD_DATABASE = 222;
-
     public static void triggerSaveDatabase(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -24,7 +21,7 @@ public class DatabaseUtils {
         String destinationFileName = BookmarkedAyahDatabaseHelper.DATABASE_NAME;
         intent.putExtra(Intent.EXTRA_TITLE, destinationFileName);
 
-        activity.startActivityForResult(intent, REQUEST_CODE_SAVE_DATABASE);
+        activity.startActivityForResult(intent, ResultCodes.REQUEST_CODE_SAVE_DATABASE);
     }
 
     public static void saveDatabase(Activity activity, Uri backupUri) {
@@ -63,7 +60,7 @@ public class DatabaseUtils {
         String[] mimetypes = {"application/x-sqlite3", "application/octet-stream"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
 
-        activity.startActivityForResult(intent, REQUEST_CODE_LOAD_DATABASE);
+        activity.startActivityForResult(intent, ResultCodes.REQUEST_CODE_LOAD_DATABASE);
     }
 
     public static void loadDatabase(Activity activity, Uri backupUri) {
