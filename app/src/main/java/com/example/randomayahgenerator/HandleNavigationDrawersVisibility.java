@@ -9,16 +9,13 @@ import com.google.android.material.navigation.NavigationView;
 
 public class HandleNavigationDrawersVisibility {
     private ImageView rightNavigationDrawerIcon;
-    private NavigationView rightNavigationView;
     private DrawerLayout drawerLayout;
 
     public HandleNavigationDrawersVisibility(
             ImageView rightNavigationDrawerIcon,
-            NavigationView rightNavigationView,
             DrawerLayout drawerLayout
     ) {
         this.rightNavigationDrawerIcon = rightNavigationDrawerIcon;
-        this.rightNavigationView = rightNavigationView;
         this.drawerLayout = drawerLayout;
     }
 

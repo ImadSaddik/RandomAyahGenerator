@@ -18,15 +18,15 @@ import java.util.List;
 public class AddAyahModalHandler {
     private Activity activity;
     private boolean isModalOpen = false;
-    private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
     private QuranDatabaseHelper quranDatabaseHelper;
-    private OnAyahAddedListener ayahAddedListener;
+    private OnDatabaseActionsListener onDatabaseActionsListener;
+    private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
 
-    public AddAyahModalHandler(Activity activity, OnAyahAddedListener ayahAddedListener) {
+    public AddAyahModalHandler(Activity activity, OnDatabaseActionsListener onDatabaseActionsListener) {
         this.activity = activity;
         this.quranDatabaseHelper = new QuranDatabaseHelper(this.activity);
         this.bookmarkedAyahDatabaseHelper = new BookmarkedAyahDatabaseHelper(this.activity);
-        this.ayahAddedListener = ayahAddedListener;
+        this.onDatabaseActionsListener = onDatabaseActionsListener;
     }
 
     public void showModal() {
@@ -106,8 +106,8 @@ public class AddAyahModalHandler {
     private void hideDialog(AlertDialog dialog) {
         dialog.dismiss();
         isModalOpen = false;
-        if (ayahAddedListener != null) {
-            ayahAddedListener.onAyahAdded();
+        if (onDatabaseActionsListener != null) {
+            onDatabaseActionsListener.onAyahAdded();
         }
     }
 }

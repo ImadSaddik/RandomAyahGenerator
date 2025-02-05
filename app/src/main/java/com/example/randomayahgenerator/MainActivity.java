@@ -1,6 +1,9 @@
 package com.example.randomayahgenerator;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -8,8 +11,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GestureDetectorCompat;
@@ -22,7 +27,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements OnAyahAddedListener {
+public class MainActivity extends AppCompatActivity implements OnDatabaseActionsListener {
     private DrawerLayout drawerLayout;
     private NavigationView rightNavigationView;
     private ImageView rightNavigationDrawerIcon;
@@ -32,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
     private TextView noAyahFoundText, generationTypeHintText;
     private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
     private HandleNavigationDrawersVisibility handleNavigationDrawersVisibility;
+    private HandleRightNavigationDrawerActions handleRightNavigationDrawerActions;
     private Button addAyahButton, randomGenerationButton, manualGenerationButton, repeatGenerationButton;
 
     @Override
@@ -64,6 +70,23 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
         showButtonsBasedOnTheRowCount();
     }
 
+    @Override
+    public void onRowsDeleted() {
+        showButtonsBasedOnTheRowCount();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Log.d("SIGN_IN_TAG", "onActivityResult inside: " + requestCode + " " + resultCode);
+            if (requestCode != 1) {
+                handleDatabaseAction(requestCode, data);
+            }
+        }
+    }
+
     private void instantiateViews() {
         drawerLayout = findViewById(R.id.drawerLayout);
         rightNavigationView = findViewById(R.id.rightNavigationDrawer);
@@ -83,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
     private void instantiateObjects() {
         handleNavigationDrawersVisibility = new HandleNavigationDrawersVisibility(
             rightNavigationDrawerIcon,
-            rightNavigationView,
             drawerLayout
         );
         HandleSwipeAndDrawers handleSwipeAndDrawers = new HandleSwipeAndDrawers(drawerLayout);
@@ -93,6 +115,12 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
         );
         bookmarkedAyahDatabaseHelper = new BookmarkedAyahDatabaseHelper(this);
         addAyahModalHandler = new AddAyahModalHandler(this, this);
+        handleRightNavigationDrawerActions = new HandleRightNavigationDrawerActions(
+                drawerLayout,
+                rightNavigationView,
+                this,
+                this
+        );
     }
 
     public void showButtonsBasedOnTheRowCount() {
@@ -114,6 +142,12 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
     }
 
     private void setClickListeners() {
+        handleRightNavigationDrawerActions.setLoadDataClickListener();
+        handleRightNavigationDrawerActions.setSaveDataClickListener();
+        handleRightNavigationDrawerActions.setDeleteDataClickListener();
+        handleRightNavigationDrawerActions.setViewDashboardClickListener();
+        handleRightNavigationDrawerActions.setViewDataClickListener();
+
         addAyahButton.setOnClickListener(v -> addAyahModalHandler.showModal());
         repeatGenerationButton.setOnClickListener(v -> {
             generationTypeHintText.setVisibility(View.VISIBLE);
@@ -165,5 +199,18 @@ public class MainActivity extends AppCompatActivity implements OnAyahAddedListen
         ayahCardContent.setText(ayah);
 
         return ayahCardView;
+    }
+
+    private void handleDatabaseAction(int requestCode, Intent data) {
+        if (requestCode == DatabaseUtils.REQUEST_CODE_SAVE_DATABASE) {
+            Uri destinationUri = data.getData();
+            DatabaseUtils.saveDatabase(this, destinationUri);
+            this.drawerLayout.closeDrawer(this.rightNavigationView);
+        } else if (requestCode == DatabaseUtils.REQUEST_CODE_LOAD_DATABASE) {
+            Uri sourceUri = data.getData();
+            DatabaseUtils.loadDatabase(this, sourceUri);
+            this.drawerLayout.closeDrawer(this.rightNavigationView);
+            showButtonsBasedOnTheRowCount();
+        }
     }
 }
