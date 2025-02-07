@@ -62,6 +62,12 @@ public class HandleRightNavigationDrawerActions {
     }
 
     public void setViewDashboardClickListener() {
+        View leftHeaderView = this.navigationView.getHeaderView(0);
+        LinearLayout viewDashboardButton = leftHeaderView.findViewById(R.id.dashboardAction);
 
+        viewDashboardButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this.activity, DahsboardActivity.class);
+            this.activity.startActivity(intent);
+        });
     }
 }
