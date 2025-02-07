@@ -29,7 +29,11 @@ public class AddAyahModalHandler {
         this.bookmarkedAyahDatabaseHelper = new BookmarkedAyahDatabaseHelper(this.activity);
     }
 
-    public void showModal() {
+    public boolean getIsModalOpen() {
+        return isModalOpen;
+    }
+
+    public void showDialog() {
         if (isModalOpen) {
             return;
         }

@@ -3,6 +3,7 @@ package com.example.randomayahgenerator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -23,12 +25,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements OnDatabaseActionsListener {
     private DrawerLayout drawerLayout;
     private NavigationView rightNavigationView;
+    private ArrayList<Integer> generatedAyahIDs;
     private ImageView rightNavigationDrawerIcon;
     private GestureDetectorCompat gestureDetector;
     private LinearLayout generatedAyahsContainer;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
         handleNavigationDrawersVisibility.setNavigationDrawerListeners();
         updateUIBasedOnAyahCount();
+        stateManagement(savedInstanceState);
     }
 
     @Override
@@ -94,10 +99,19 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     @Override
     protected void onResume() {
         super.onResume();
+        updateUIBasedOnAyahCount();
+    }
 
-        if (!bookmarkedAyahDatabaseHelper.isTableContainingAtLeast2Records()) {
-            generatedAyahsContainer.removeAllViews();
-            updateUIBasedOnAyahCount();
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (addAyahModalHandler.getIsModalOpen()) {
+            outState.putBoolean("addAyahDialogIsVisible", true);
+        }
+        if (!generatedAyahIDs.isEmpty()) {
+            Toast.makeText(this, "Generated Ayah IDs" + generatedAyahIDs, Toast.LENGTH_SHORT).show();
+            outState.putIntegerArrayList("ayahIds", generatedAyahIDs);
         }
     }
 
@@ -117,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     }
 
     private void instantiateObjects() {
+        generatedAyahIDs = new ArrayList<>();
         handleNavigationDrawersVisibility = new HandleNavigationDrawersVisibility(
             rightNavigationDrawerIcon,
             drawerLayout
@@ -137,19 +152,25 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     }
 
     public void updateUIBasedOnAyahCount() {
-        if (bookmarkedAyahDatabaseHelper.isTableContainingAtLeast2Records()) {
-            noAyahFoundText.setVisibility(View.GONE);
-            generationTypeHintText.setVisibility(View.VISIBLE);
+        boolean hasNoGeneratedAyahs = generatedAyahsContainer.getChildCount() == 0;
+        boolean has2OrMoreRecords = bookmarkedAyahDatabaseHelper.isTableContainingAtLeast2Records();
 
-            addAyahButton.setVisibility(View.GONE);
-            randomGenerationButton.setVisibility(View.VISIBLE);
-        } else {
-            noAyahFoundText.setVisibility(View.VISIBLE);
-            generationTypeHintText.setVisibility(View.GONE);
-
-            addAyahButton.setVisibility(View.VISIBLE);
-            randomGenerationButton.setVisibility(View.GONE);
+        noAyahFoundText.setVisibility(has2OrMoreRecords ? View.GONE : View.VISIBLE);
+        if (hasNoGeneratedAyahs) {
+            generationTypeHintText.setVisibility(has2OrMoreRecords ? View.VISIBLE : View.GONE);
+            addAyahButton.setVisibility(has2OrMoreRecords ? View.GONE : View.VISIBLE);
             repeatGenerationButton.setVisibility(View.GONE);
+            randomGenerationButton.setVisibility(has2OrMoreRecords ? View.VISIBLE : View.GONE);
+        } else {
+            generationTypeHintText.setVisibility(View.GONE);
+            addAyahButton.setVisibility(has2OrMoreRecords ? View.GONE : View.VISIBLE);
+            repeatGenerationButton.setVisibility(has2OrMoreRecords ? View.VISIBLE : View.GONE);
+            randomGenerationButton.setVisibility(View.GONE);
+
+            if (!has2OrMoreRecords) {
+                Toast.makeText(this, "Removing views", Toast.LENGTH_SHORT).show();
+                generatedAyahsContainer.removeAllViews();
+            }
         }
     }
 
@@ -160,13 +181,14 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         handleRightNavigationDrawerActions.setViewDashboardClickListener();
         handleRightNavigationDrawerActions.setViewDataClickListener();
 
-        addAyahButton.setOnClickListener(v -> addAyahModalHandler.showModal());
+        addAyahButton.setOnClickListener(v -> addAyahModalHandler.showDialog());
         repeatGenerationButton.setOnClickListener(v -> {
             generationTypeHintText.setVisibility(View.VISIBLE);
             randomGenerationButton.setVisibility(View.VISIBLE);
             repeatGenerationButton.setVisibility(View.GONE);
 
             generatedAyahsContainer.removeAllViews();
+            generatedAyahIDs.clear();
         });
         randomGenerationButton.setOnClickListener(v -> {
             generationTypeHintText.setVisibility(View.GONE);
@@ -175,6 +197,9 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
             List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getRandomAyahs(2);
             for (int i = 0; i < rows.size(); i++) {
+                Integer ayahID = Integer.parseInt(rows.get(i).get(BookmarkedAyahDatabaseHelper.COLUMN_ID).toString());
+                generatedAyahIDs.add(ayahID);
+
                 View ayahCard = getAyahCard(rows.get(i));
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -226,6 +251,39 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
             Uri sourceUri = data.getData();
             DatabaseUtils.loadDatabase(this, sourceUri);
             this.drawerLayout.closeDrawer(this.rightNavigationView);
+            updateUIBasedOnAyahCount();
+        }
+    }
+
+    private void stateManagement(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
+
+        if (savedInstanceState.getBoolean("addAyahDialogIsVisible")) {
+            addAyahModalHandler.showDialog();
+        }
+
+        if (savedInstanceState.getIntegerArrayList("ayahIds") != null) {
+            generatedAyahIDs = savedInstanceState.getIntegerArrayList("ayahIds");
+            if (generatedAyahIDs == null) {
+                return;
+            }
+            for (int i = 0; i < generatedAyahIDs.size(); i++) {
+                Map<String, Object> ayahMap = bookmarkedAyahDatabaseHelper.getAyahByID(generatedAyahIDs.get(i));
+                View ayahCard = getAyahCard(ayahMap);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                if (i > 0) {
+                    params.topMargin = 32;
+                }
+
+                ayahCard.setLayoutParams(params);
+                generatedAyahsContainer.addView(ayahCard);
+                incrementPlayCount(ayahMap);
+            }
             updateUIBasedOnAyahCount();
         }
     }

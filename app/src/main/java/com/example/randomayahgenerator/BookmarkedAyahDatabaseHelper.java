@@ -75,25 +75,31 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Map<String, Object>> getAyah(int ayahNumber) {
+    public Map<String, Object> getAyahByID(int ayahID) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, null, COLUMN_AYAH_NUMBER + " = ?",
-                new String[]{String.valueOf(ayahNumber)}, null, null, null);
+        String[] selectionArgs = new String[]{String.valueOf(ayahID)};
+        Cursor cursor = db.query(
+                TABLE_NAME,
+                null,
+                COLUMN_ID + " = ?",
+                selectionArgs,
+                null,
+                null,
+                null
+        );
 
-        List<Map<String, Object>> results = new ArrayList<>();
+        Map<String, Object> result = new HashMap<>();
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                Map<String, Object> row = new HashMap<>();
-                row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
-                row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
-                row.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
-                row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
-                results.add(row);
+                result.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
+                result.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
+                result.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
+                result.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
             }
             cursor.close();
         }
         db.close();
-        return results;
+        return result;
     }
 
     public List<Map<String, Object>> getRandomAyahs(int count) {

@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -40,6 +41,7 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
         instantiateObjects();
         setClickListeners();
         populateRowsContainer();
+        stateManagement(savedInstanceState);
     }
 
     @Override
@@ -54,6 +56,15 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
 
     @Override
     public void onSpecificRowDeleted() {
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (addAyahModalHandler.getIsModalOpen()) {
+            outState.putBoolean("addAyahDialogIsVisible", true);
+        }
     }
 
     private void instantiateViews() {
@@ -73,7 +84,7 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
             finish();
         });
         addAyahButton.setOnClickListener(v -> {
-            addAyahModalHandler.showModal();
+            addAyahModalHandler.showDialog();
         });
     }
 
@@ -143,6 +154,16 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
             noDataInDatabaseTextView.setVisibility(View.VISIBLE);
         } else {
             noDataInDatabaseTextView.setVisibility(View.GONE);
+        }
+    }
+
+    private void stateManagement(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
+
+        if (savedInstanceState.getBoolean("addAyahDialogIsVisible")) {
+            addAyahModalHandler.showDialog();
         }
     }
 }
