@@ -3,7 +3,6 @@ package com.example.randomayahgenerator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         setClickListeners();
 
         handleNavigationDrawersVisibility.setNavigationDrawerListeners();
-        showButtonsBasedOnTheRowCount();
+        updateUIBasedOnAyahCount();
     }
 
     @Override
@@ -67,17 +66,17 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
     @Override
     public void onAyahAdded() {
-        showButtonsBasedOnTheRowCount();
+        updateUIBasedOnAyahCount();
     }
 
     @Override
     public void onRowsDeleted() {
-        showButtonsBasedOnTheRowCount();
+        updateUIBasedOnAyahCount();
     }
 
     @Override
     public void onSpecificRowDeleted() {
-        showButtonsBasedOnTheRowCount();
+        updateUIBasedOnAyahCount();
     }
 
     @Override
@@ -95,7 +94,11 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     @Override
     protected void onResume() {
         super.onResume();
-        showButtonsBasedOnTheRowCount();
+
+        if (!bookmarkedAyahDatabaseHelper.isTableContainingAtLeast2Records()) {
+            generatedAyahsContainer.removeAllViews();
+            updateUIBasedOnAyahCount();
+        }
     }
 
     private void instantiateViews() {
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         );
     }
 
-    public void showButtonsBasedOnTheRowCount() {
+    public void updateUIBasedOnAyahCount() {
         if (bookmarkedAyahDatabaseHelper.isTableContainingAtLeast2Records()) {
             noAyahFoundText.setVisibility(View.GONE);
             generationTypeHintText.setVisibility(View.VISIBLE);
@@ -149,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
             addAyahButton.setVisibility(View.VISIBLE);
             randomGenerationButton.setVisibility(View.GONE);
             manualGenerationButton.setVisibility(View.GONE);
+            repeatGenerationButton.setVisibility(View.GONE);
         }
     }
 
@@ -227,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
             Uri sourceUri = data.getData();
             DatabaseUtils.loadDatabase(this, sourceUri);
             this.drawerLayout.closeDrawer(this.rightNavigationView);
-            showButtonsBasedOnTheRowCount();
+            updateUIBasedOnAyahCount();
         }
     }
 }
