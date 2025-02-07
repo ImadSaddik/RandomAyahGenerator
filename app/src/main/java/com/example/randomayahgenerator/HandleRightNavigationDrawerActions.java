@@ -23,7 +23,13 @@ public class HandleRightNavigationDrawerActions {
     }
 
     public void setViewDataClickListener() {
+        View leftHeaderView = this.navigationView.getHeaderView(0);
+        LinearLayout viewDashboardButton = leftHeaderView.findViewById(R.id.viewDataAction);
 
+        viewDashboardButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this.activity, ViewDataActivity.class);
+            this.activity.startActivity(intent);
+        });
     }
 
     public void setLoadDataClickListener() {
@@ -56,12 +62,6 @@ public class HandleRightNavigationDrawerActions {
     }
 
     public void setViewDashboardClickListener() {
-        View leftHeaderView = this.navigationView.getHeaderView(0);
-        LinearLayout viewDashboardButton = leftHeaderView.findViewById(R.id.viewDataAction);
 
-        viewDashboardButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this.activity, ViewDataActivity.class);
-            this.activity.startActivity(intent);
-        });
     }
 }
