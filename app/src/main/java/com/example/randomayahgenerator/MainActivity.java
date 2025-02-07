@@ -3,7 +3,6 @@ package com.example.randomayahgenerator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -86,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Toast.makeText(this, "Back", Toast.LENGTH_SHORT).show();
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null && data.getData() != null) {
@@ -110,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
             outState.putBoolean("addAyahDialogIsVisible", true);
         }
         if (!generatedAyahIDs.isEmpty()) {
-            Toast.makeText(this, "Generated Ayah IDs" + generatedAyahIDs, Toast.LENGTH_SHORT).show();
             outState.putIntegerArrayList("ayahIds", generatedAyahIDs);
         }
     }
@@ -168,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
             randomGenerationButton.setVisibility(View.GONE);
 
             if (!has2OrMoreRecords) {
-                Toast.makeText(this, "Removing views", Toast.LENGTH_SHORT).show();
                 generatedAyahsContainer.removeAllViews();
             }
         }
@@ -196,23 +191,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
             repeatGenerationButton.setVisibility(View.VISIBLE);
 
             List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getRandomAyahs(2);
-            for (int i = 0; i < rows.size(); i++) {
-                Integer ayahID = Integer.parseInt(rows.get(i).get(BookmarkedAyahDatabaseHelper.COLUMN_ID).toString());
-                generatedAyahIDs.add(ayahID);
-
-                View ayahCard = getAyahCard(rows.get(i));
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                if (i > 0) {
-                    params.topMargin = 32;
-                }
-
-                ayahCard.setLayoutParams(params);
-                generatedAyahsContainer.addView(ayahCard);
-                incrementPlayCount(rows.get(i));
-            }
+            addAyahCardsToContainer(rows);
         });
     }
 
@@ -269,22 +248,36 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
             if (generatedAyahIDs == null) {
                 return;
             }
-            for (int i = 0; i < generatedAyahIDs.size(); i++) {
-                Map<String, Object> ayahMap = bookmarkedAyahDatabaseHelper.getAyahByID(generatedAyahIDs.get(i));
-                View ayahCard = getAyahCard(ayahMap);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                if (i > 0) {
-                    params.topMargin = 32;
-                }
 
-                ayahCard.setLayoutParams(params);
-                generatedAyahsContainer.addView(ayahCard);
-                incrementPlayCount(ayahMap);
+            List<Map<String, Object>> rows = new ArrayList<>();
+            for (int ayahId : generatedAyahIDs) {
+                rows.add(bookmarkedAyahDatabaseHelper.getAyahByID(ayahId));
             }
-            updateUIBasedOnAyahCount();
+            addAyahCardsToContainer(rows);
         }
+    }
+
+    private void addAyahCardsToContainer(List<Map<String, Object>> rows) {
+        for (int i = 0; i < rows.size(); i++) {
+            Object columnID = rows.get(i).get(BookmarkedAyahDatabaseHelper.COLUMN_ID);
+            if (columnID != null) {
+                int ayahID = Integer.parseInt(columnID.toString());
+                generatedAyahIDs.add(ayahID);
+            }
+
+            View ayahCard = getAyahCard(rows.get(i));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            if (i > 0) {
+                params.topMargin = 32;
+            }
+
+            ayahCard.setLayoutParams(params);
+            generatedAyahsContainer.addView(ayahCard);
+            incrementPlayCount(rows.get(i));
+        }
+        updateUIBasedOnAyahCount();
     }
 }
