@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     private TextView noAyahFoundText, generationTypeHintText;
     private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
     private HandleNavigationDrawersVisibility handleNavigationDrawersVisibility;
+    private Button addAyahButton, randomGenerationButton, repeatGenerationButton;
     private HandleRightNavigationDrawerActions handleRightNavigationDrawerActions;
-    private Button addAyahButton, randomGenerationButton, manualGenerationButton, repeatGenerationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
         addAyahButton = findViewById(R.id.addAyahButton);
         randomGenerationButton = findViewById(R.id.randomGenerationButton);
-        manualGenerationButton = findViewById(R.id.manualGenerationButton);
         repeatGenerationButton = findViewById(R.id.repeatGenerationButton);
 
         generatedAyahsContainer = findViewById(R.id.generatedAyahsContainer);
@@ -144,14 +143,12 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
             addAyahButton.setVisibility(View.GONE);
             randomGenerationButton.setVisibility(View.VISIBLE);
-            manualGenerationButton.setVisibility(View.VISIBLE);
         } else {
             noAyahFoundText.setVisibility(View.VISIBLE);
             generationTypeHintText.setVisibility(View.GONE);
 
             addAyahButton.setVisibility(View.VISIBLE);
             randomGenerationButton.setVisibility(View.GONE);
-            manualGenerationButton.setVisibility(View.GONE);
             repeatGenerationButton.setVisibility(View.GONE);
         }
     }
@@ -167,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         repeatGenerationButton.setOnClickListener(v -> {
             generationTypeHintText.setVisibility(View.VISIBLE);
             randomGenerationButton.setVisibility(View.VISIBLE);
-            manualGenerationButton.setVisibility(View.VISIBLE);
             repeatGenerationButton.setVisibility(View.GONE);
 
             generatedAyahsContainer.removeAllViews();
@@ -175,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         randomGenerationButton.setOnClickListener(v -> {
             generationTypeHintText.setVisibility(View.GONE);
             randomGenerationButton.setVisibility(View.GONE);
-            manualGenerationButton.setVisibility(View.GONE);
             repeatGenerationButton.setVisibility(View.VISIBLE);
 
             List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getRandomAyahs(2);

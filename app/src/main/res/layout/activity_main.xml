@@ -132,19 +132,6 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/manualGenerationButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/randomGenerationButton"
-                android:layout_marginTop="0dp"
-                android:width="250dp"
-                android:height="80dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="@string/manual_generation_button"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
         </RelativeLayout>
 
         <RelativeLayout
