@@ -24,9 +24,9 @@ public class HandleRightNavigationDrawerActions {
 
     public void setViewDataClickListener() {
         View leftHeaderView = this.navigationView.getHeaderView(0);
-        LinearLayout viewDashboardButton = leftHeaderView.findViewById(R.id.viewDataAction);
+        LinearLayout viewDataButton = leftHeaderView.findViewById(R.id.viewDataAction);
 
-        viewDashboardButton.setOnClickListener(v -> {
+        viewDataButton.setOnClickListener(v -> {
             Intent intent = new Intent(this.activity, ViewDataActivity.class);
             this.activity.startActivity(intent);
         });
