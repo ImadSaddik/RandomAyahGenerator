@@ -2,7 +2,7 @@
     <string name="app_name">RandomAyahGenerator</string>
     <string name="app_name_arabic">مُوَلِّدُ آيَاتٍ عَشْوَائِيّ</string>
     <string name="right_navigation_icon_content_description">This icon opens the right navigation drawer</string>
-    <string name="choose_generation_method">اِخْتَرْ طَرِيقَةَ التَّوْلِيدِ</string>
+    <string name="choose_generation_method">اِبْدَأْ تَوْلِيدَ آيَاتٍ عَشْوَائِيَّةٍ بِالضَّغْطِ عَلَى الزِّرِّ</string>
     <string name="random_generation_button">تَوْلِيدٌ عَشْوَائِيٌِّ</string>
     <string name="no_ayah_found">لَا تُوجَدُ أَيُّ آيَةٍ فِي قَاعِدَةِ الْبَيَانَاتِ ، ابْدَأْ بِإِضَافَةِ آيَتَيْنِ عَلَى الْأَقَلِّ فِي قَاعِدَةِ الْبَيَانَاتِ.</string>
     <string name="add_ayah_button">إِضَافَةُ آيَةٍ</string>
