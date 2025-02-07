@@ -40,15 +40,22 @@
             app:srcCompat="@drawable/chevron_right" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/rowsContainer"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+
+        <LinearLayout
+            android:id="@+id/rowsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="96dp"
+            android:orientation="vertical" />
+    </ScrollView>
 
     <Button
         android:id="@+id/addAyahButton"
