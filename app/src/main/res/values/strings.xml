@@ -22,4 +22,8 @@
     <string name="settings">الإِعْدَادَاتُ</string>
     <string name="displaying_data">عَرْضُ الْبَيَانَاتِ</string>
     <string name="no_data_in_database">لَا تُوجَدُ أَيُّ آيَةٍ فِي قَاعِدَةِ الْبَيَانَاتِ.</string>
+    <string name="ayah_stats">إِحْصَائِيَّاتُ الْآيَةِ</string>
+    <string name="surah_stats">إِحْصَائِيَّاتُ السُّورَةِ</string>
+    <string name="total_count">عَدَدُ إِجْمَالِيِّ التَّشْغِيلِ</string>
+    <string name="play_prefix">مَرَّة</string>
 </resources>
