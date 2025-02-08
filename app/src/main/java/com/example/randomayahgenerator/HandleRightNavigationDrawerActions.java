@@ -66,7 +66,7 @@ public class HandleRightNavigationDrawerActions {
         LinearLayout viewDashboardButton = leftHeaderView.findViewById(R.id.dashboardAction);
 
         viewDashboardButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this.activity, DahsboardActivity.class);
+            Intent intent = new Intent(this.activity, DashboardActivity.class);
             this.activity.startActivity(intent);
         });
     }
