@@ -182,4 +182,72 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_NAME, COLUMN_ID + " = ?", selectedArgs);
         db.close();
     }
+
+    public List<Map<String, Object>> getMostPlayedAyahs(int count) {
+        SQLiteDatabase db = getReadableDatabase();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        String sqlQuery = "SELECT * FROM " + TABLE_NAME +  " ORDER BY " + COLUMN_PLAY_COUNT + " DESC LIMIT " + count;
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
+                row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
+                row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
+                row.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
+                row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
+                results.add(row);
+            }
+        }
+
+        cursor.close();
+        db.close();
+        return results;
+    }
+
+    public List<Map<String, Object>> getMostPlayedSurah(int count) {
+        SQLiteDatabase db = getReadableDatabase();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        String sqlQuery = "SELECT "
+                + COLUMN_SURA + ", SUM("
+                + COLUMN_PLAY_COUNT + ") AS " + COLUMN_PLAY_COUNT
+                + " FROM " + TABLE_NAME
+                + " GROUP BY " + COLUMN_SURA
+                + " ORDER BY " + COLUMN_PLAY_COUNT + " DESC LIMIT " + count;
+
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
+                row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
+                results.add(row);
+            }
+        }
+
+        cursor.close();
+        db.close();
+        return results;
+    }
+
+    public int getTotalPlayCount() {
+        SQLiteDatabase db = getReadableDatabase();
+        String sqlQuery = "SELECT SUM(" + COLUMN_PLAY_COUNT + ") FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        int totalPlayCount = 0;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                totalPlayCount = cursor.getInt(0);
+            }
+            cursor.close();
+        }
+
+        db.close();
+        return totalPlayCount;
+    }
 }
