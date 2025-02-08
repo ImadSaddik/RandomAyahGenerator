@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">RandomAyahGenerator</string>
-    <string name="app_name_arabic">مُوَلِّدُ آيَاتٍ عَشْوَائِيّ</string>
+    <string name="app_name">مُوَلِّدُ آيَاتٍ عَشْوَائِيّ</string>
     <string name="right_navigation_icon_content_description">This icon opens the right navigation drawer</string>
     <string name="choose_generation_method">اِبْدَأْ تَوْلِيدَ آيَاتٍ عَشْوَائِيَّةٍ بِالضَّغْطِ عَلَى الزِّرِّ</string>
     <string name="random_generation_button">تَوْلِيدٌ عَشْوَائِيٌِّ</string>

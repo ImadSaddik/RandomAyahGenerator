@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:fontFamily="@font/roboto_medium"
-                android:text="@string/app_name_arabic"
+                android:text="@string/app_name"
                 android:textAlignment="center"
                 android:textColor="?attr/textSecondaryColor"
                 android:textSize="18sp" />
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/roboto_medium"
-            android:text="@string/app_name_arabic"
+            android:text="@string/app_name"
             android:textAlignment="textStart"
             android:textColor="?attr/textPrimaryColor"
             android:textSize="22sp"
