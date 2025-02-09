@@ -1,6 +1,8 @@
 package com.example.randomayahgenerator;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ViewDataActivity extends AppCompatActivity implements OnDatabaseActionsListener {
     private Button addAyahButton;
@@ -89,13 +93,22 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
     }
 
     private void populateRowsContainer() {
-        rowsContainer.removeAllViews();
-        List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getAllAyahs();
-        for (Map<String, Object> row : rows) {
-            View view = getRowView(row);
-            rowsContainer.addView(view);
-        }
-        showHideNoDataInDatabaseTextView(rows.isEmpty());
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getAllAyahs();
+            runOnUiThread(() -> {
+                rowsContainer.removeAllViews();
+
+                for (Map<String, Object> row : rows) {
+                    View view = getRowView(row);
+                    rowsContainer.addView(view);
+                }
+
+                showHideNoDataInDatabaseTextView(rows.isEmpty());
+            });
+        });
+
+        executor.shutdown();
     }
 
     private View getRowView(Map<String, Object> row) {

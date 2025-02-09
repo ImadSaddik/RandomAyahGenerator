@@ -15,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DashboardActivity extends AppCompatActivity {
     private LinearLayout ayahStatsLayout, surahStatsLayout, totalPlayCountLayout;
@@ -54,18 +56,24 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void showDashboard() {
-        List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getAllAyahs();
-        updateUIVisibility(rows.isEmpty());
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getAllAyahs();
+            List<Map<String, Object>> mostPlayedAyahs = bookmarkedAyahDatabaseHelper.getMostPlayedAyahs(5);
+            List<Map<String, Object>> mostPlayedSurah = bookmarkedAyahDatabaseHelper.getMostPlayedSurah(5);
 
-        List<Map<String, Object>> mostPlayedAyahs = bookmarkedAyahDatabaseHelper.getMostPlayedAyahs(5);
-        populateAyahStatsLayout(mostPlayedAyahs);
+            runOnUiThread(() -> {
+                updateUIVisibility(rows.isEmpty());
+                populateAyahStatsLayout(mostPlayedAyahs);
+                populateSurahStatsLayout(mostPlayedSurah);
 
-        List<Map<String, Object>> mostPlayedSurah = bookmarkedAyahDatabaseHelper.getMostPlayedSurah(5);
-        populateSurahStatsLayout(mostPlayedSurah);
+                int totalPlayCount = bookmarkedAyahDatabaseHelper.getTotalPlayCount();
+                String text = totalPlayCount + " " + getString(R.string.play_prefix);
+                totalPlayCountTextView.setText(text);
+            });
+        });
 
-        int totalPlayCount = bookmarkedAyahDatabaseHelper.getTotalPlayCount();
-        String text = totalPlayCount + " " + getString(R.string.play_prefix);
-        totalPlayCountTextView.setText(text);
+        executor.shutdown();
     }
 
     private void updateUIVisibility(boolean isDatabaseEmpty) {
