@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DashboardActivity extends AppCompatActivity {
-    private LinearLayout ayahStatsLayout, surahStatsLayout;
+    private LinearLayout ayahStatsLayout, surahStatsLayout, totalPlayCountLayout;
     private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
     private TextView noDataInDatabaseTextView, totalPlayCountTextView, ayahStatsTitle, surahStatsTitle, totalPlayCountTitle;
 
@@ -46,6 +46,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         ayahStatsLayout = findViewById(R.id.ayahStatsContainer);
         surahStatsLayout = findViewById(R.id.surahStatsContainer);
+        totalPlayCountLayout = findViewById(R.id.totalPlayCountContainer);
     }
 
     private void instantiateObjects() {
@@ -74,7 +75,7 @@ public class DashboardActivity extends AppCompatActivity {
         totalPlayCountTitle.setVisibility(isDatabaseEmpty ? View.GONE: View.VISIBLE);
         ayahStatsLayout.setVisibility(isDatabaseEmpty ? View.GONE: View.VISIBLE);
         surahStatsLayout.setVisibility(isDatabaseEmpty ? View.GONE: View.VISIBLE);
-        totalPlayCountTextView.setVisibility(isDatabaseEmpty ? View.GONE: View.VISIBLE);
+        totalPlayCountLayout.setVisibility(isDatabaseEmpty ? View.GONE: View.VISIBLE);
     }
 
     private void populateAyahStatsLayout(List<Map<String, Object>> mostPlayedAyahs) {
