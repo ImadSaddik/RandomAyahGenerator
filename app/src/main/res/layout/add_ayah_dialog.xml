@@ -36,7 +36,8 @@
         android:id="@+id/surahLayout"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconMode="clear_text"
         android:layout_marginTop="32dp">
 
         <AutoCompleteTextView
@@ -46,7 +47,6 @@
             android:dropDownHeight="300dp"
             android:fontFamily="@font/roboto_medium"
             android:hint="@string/surah_dropdown_hint"
-            android:inputType="none"
             android:popupBackground="@drawable/custom_dropdown_background"
             android:textColor="?attr/textPrimaryColor" />
     </com.google.android.material.textfield.TextInputLayout>
