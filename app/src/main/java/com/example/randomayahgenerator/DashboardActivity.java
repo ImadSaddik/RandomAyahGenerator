@@ -3,6 +3,7 @@ package com.example.randomayahgenerator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,8 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DashboardActivity extends AppCompatActivity {
-    private LinearLayout ayahStatsLayout, surahStatsLayout, totalPlayCountLayout;
+    private ImageView returnToHomeScreenButton;
     private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
+    private LinearLayout ayahStatsLayout, surahStatsLayout, totalPlayCountLayout;
     private TextView noDataInDatabaseTextView, totalPlayCountTextView, ayahStatsTitle, surahStatsTitle, totalPlayCountTitle;
 
     @Override
@@ -37,9 +39,15 @@ public class DashboardActivity extends AppCompatActivity {
         instantiateViews();
         instantiateObjects();
         showDashboard();
+
+        returnToHomeScreenButton.setOnClickListener(v -> {
+            finish();
+        });
     }
 
     private void instantiateViews() {
+        returnToHomeScreenButton = findViewById(R.id.returnToHomeScreenButton);
+
         ayahStatsTitle = findViewById(R.id.ayahStatsTitle);
         surahStatsTitle = findViewById(R.id.surahStatsTitle);
         totalPlayCountTitle = findViewById(R.id.totalPlayCountTitle);
