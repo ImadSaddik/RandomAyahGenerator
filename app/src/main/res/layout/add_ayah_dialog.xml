@@ -37,14 +37,14 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:endIconMode="clear_text"
-        android:layout_marginTop="32dp">
+        android:layout_marginTop="32dp"
+        app:endIconMode="clear_text">
 
         <AutoCompleteTextView
             android:id="@+id/surahDropdown"
-            android:completionThreshold="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:dropDownHeight="300dp"
             android:fontFamily="@font/roboto_medium"
             android:hint="@string/surah_dropdown_hint"
@@ -70,6 +70,15 @@
             android:popupBackground="@drawable/custom_dropdown_background"
             android:textColor="?attr/textPrimaryColor" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <CheckBox
+        android:id="@+id/addCompleteSurahCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layoutDirection="rtl"
+        android:text="@string/add_all_ayahs_in_surah" />
 
     <TextView
         android:id="@+id/ayahPreviewTextView"

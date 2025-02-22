@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -46,9 +48,11 @@ public class AddAyahModalHandler {
         TextView ayahTextView = view.findViewById(R.id.ayahPreviewTextView);
         ImageView closeModalIcon = view.findViewById(R.id.closeAddAyahModalIcon);
         TextView addAyahButton = view.findViewById(R.id.addAyahButtonModal);
+        CheckBox addCompleteSurahCheckBox = view.findViewById(R.id.addCompleteSurahCheckBox);
 
         addAyahButton.setEnabled(false);
         ayahTextInputLayout.setVisibility(View.GONE);
+        addCompleteSurahCheckBox.setVisibility(View.GONE);
 
         // Populate the surah dropdown with the list of surah names
         List<String> surahNames = quranDatabaseHelper.getListOfSurahNames();
@@ -66,6 +70,7 @@ public class AddAyahModalHandler {
             ayahTextView.setText("");
             addAyahButton.setEnabled(false);
             ayahTextInputLayout.setVisibility(View.VISIBLE);
+            addCompleteSurahCheckBox.setVisibility(View.VISIBLE);
 
             ArrayAdapter<Integer> ayahAdapter = new ArrayAdapter<>(activity, R.layout.my_1_line_dropdown_item, ayahNumbers);
             ayahDropdown.setAdapter(ayahAdapter);
@@ -79,15 +84,35 @@ public class AddAyahModalHandler {
             addAyahButton.setEnabled(true);
         });
 
+        // Disable the ayah dropdown if the checkbox is checked
+        addCompleteSurahCheckBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked) {
+                addAyahButton.setEnabled(true);
+                ayahTextInputLayout.setVisibility(View.GONE);
+            } else {
+                addAyahButton.setEnabled(false);
+                ayahTextInputLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
         AlertDialog dialog = getAlertDialog(view);
         // Set click listeners
         closeModalIcon.setOnClickListener(v -> hideDialog(dialog));
         addAyahButton.setOnClickListener(v -> {
             String surah = surahDropdown.getText().toString();
-            int ayahNumber = Integer.parseInt(ayahDropdown.getText().toString());
             String ayahText = ayahTextView.getText().toString();
 
-            bookmarkedAyahDatabaseHelper.addAyah(ayahText, ayahNumber, surah);
+            if (addCompleteSurahCheckBox.isChecked()) {
+                bookmarkedAyahDatabaseHelper.addFullSurah(surah);
+            } else {
+                int ayahNumber = Integer.parseInt(ayahDropdown.getText().toString());
+                boolean isAdded = bookmarkedAyahDatabaseHelper.addAyah(ayahText, ayahNumber, surah);
+                if (isAdded) {
+                    Toast.makeText(this.activity, "Ayah added successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this.activity, "Ayah already exists!", Toast.LENGTH_SHORT).show();
+                }
+            }
             hideDialog(dialog);
         });
 

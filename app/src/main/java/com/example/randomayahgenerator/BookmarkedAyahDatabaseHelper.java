@@ -45,7 +45,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         // For now, there is no need to upgrade the database.
     }
 
-    public void addAyah(String ayah, int ayahNumber, String surah) {
+    public boolean addAyah(String ayah, int ayahNumber, String surah) {
         SQLiteDatabase db = getWritableDatabase();
         String[] selectionArgs = new String[]{ayah, String.valueOf(ayahNumber), surah};
         Cursor cursor = db.query(
@@ -65,13 +65,12 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
             values.put(COLUMN_AYAH_NUMBER, ayahNumber);
             values.put(COLUMN_SURA, surah);
             db.insert(TABLE_NAME, null, values);
-            Toast.makeText(this.context, "Ayah added successfully", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this.context, "Ayah already exists!", Toast.LENGTH_SHORT).show();
+            return true;
         }
 
         cursor.close();
         db.close();
+        return false;
     }
 
     public Map<String, Object> getAyahByID(int ayahID) {
@@ -249,5 +248,31 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
 
         db.close();
         return totalPlayCount;
+    }
+
+    public void addFullSurah(String surah) {
+        try (QuranDatabaseHelper quranDatabaseHelper = new QuranDatabaseHelper(this.context)) {
+            Map<String, List<Integer>> surahAyahMapping = quranDatabaseHelper.getSurahAyahMapping();
+            List<Integer> ayahNumbers = surahAyahMapping.get(surah);
+            if (ayahNumbers == null) {
+                return;
+            }
+
+            boolean isSurahAlreadyAdded = true;
+            for (Integer ayahNumber : ayahNumbers) {
+                String ayahText = quranDatabaseHelper.getAyahText(surah, ayahNumber);
+                // addAyah will take care of the fact that an ayah can already be in the database
+                boolean isAdded = addAyah(ayahText, ayahNumber, surah);
+                if (isAdded) {
+                    isSurahAlreadyAdded = false;
+                }
+            }
+
+            if (isSurahAlreadyAdded) {
+                Toast.makeText(this.context, "Surah already exists!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this.context, "Surah added successfully", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

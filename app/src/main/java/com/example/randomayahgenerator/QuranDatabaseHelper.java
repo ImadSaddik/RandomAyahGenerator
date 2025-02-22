@@ -112,7 +112,7 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
                 int ayahNumber = cursor.getInt(cursor.getColumnIndexOrThrow("AyahNumber"));
 
                 if (!surahAyahMap.containsKey(surah)) {
-                    surahAyahMap.put(surah, new ArrayList<Integer>());
+                    surahAyahMap.put(surah, new ArrayList<>());
                 }
 
                 List<Integer> ayahNumbers = surahAyahMap.get(surah);
