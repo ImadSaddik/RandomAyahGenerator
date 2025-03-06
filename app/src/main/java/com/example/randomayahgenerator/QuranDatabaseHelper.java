@@ -21,6 +21,7 @@ import java.util.TreeMap;
 public class QuranDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "quraan.db";
     private static final int DATABASE_VERSION = 1;
+    public static final String TABLE_NAME = "data";
     public static final String COLUMN_AYAH = "Ayah";
     public static final String COLUMN_AYAH_NUMBER = "AyahNumber";
     public static final String COLUMN_SURAH = "Surah";
@@ -75,7 +76,7 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
         List<String> surahNames = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
-                "data",
+                TABLE_NAME,
                 new String[]{COLUMN_SURAH},
                 null,
                 null,
@@ -100,7 +101,7 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
     public Map<String, List<Integer>> getSurahAyahMapping() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
-                "data",
+                TABLE_NAME,
                 null,
                 null,
                 null,
@@ -136,7 +137,7 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
         String selection = COLUMN_SURAH + " = ? AND " + COLUMN_AYAH_NUMBER + " = ?";
 
         Cursor cursor = db.query(
-                "data",
+                TABLE_NAME,
                 null,
                 selection,
                 selectionArgs,
