@@ -168,13 +168,13 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
-    public List<Map<String, Object>> getAllAyahs(int numberOfRows) {
+    public List<Map<String, Object>> getAllAyahs(int numberOfRows, int offset) {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
 
         String orderBy = COLUMN_SURAH_NUMBER + " ASC, " + COLUMN_AYAH_NUMBER + " ASC";
-        String limit = String.valueOf(numberOfRows);
-        if (numberOfRows == -1) {
+        String limit = offset + "," + numberOfRows;
+        if (numberOfRows == -1 || offset == -1) {
             limit = null;
         }
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, orderBy, limit);
@@ -324,5 +324,21 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
                 Toast.makeText(this.context, "Surah added successfully", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public int getCountOfAyahs() {
+        SQLiteDatabase db = getReadableDatabase();
+        String sqlQuery = "SELECT COUNT(*) FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        int count = 0;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+            cursor.close();
+        }
+        db.close();
+        return count;
     }
 }
