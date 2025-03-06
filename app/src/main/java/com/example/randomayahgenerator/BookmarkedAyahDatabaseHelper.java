@@ -14,11 +14,12 @@ import java.util.Map;
 
 public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "quran_data.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String TABLE_NAME = "ayahs";
     public static final String COLUMN_AYAH = "ayah";
     public static final String COLUMN_AYAH_NUMBER = "ayah_number";
-    public static final String COLUMN_SURA = "sura";
+    public static final String COLUMN_SURAH = "sura";
+    public static final String COLUMN_SURAH_NUMBER = "surah_number";
     public static final String COLUMN_PLAY_COUNT = "play_count";
     public static final String COLUMN_ID = "_id";
     private Context context;
@@ -34,15 +35,59 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_AYAH + " TEXT NOT NULL, " +
                 COLUMN_AYAH_NUMBER + " INTEGER NOT NULL, " +
-                COLUMN_SURA + " TEXT NOT NULL, " +
+                COLUMN_SURAH + " TEXT NOT NULL, " +
+                COLUMN_SURAH_NUMBER + " INTEGER DEFAULT 0," +
                 COLUMN_PLAY_COUNT + " INTEGER DEFAULT 0)";
 
         db.execSQL(createTableQuery);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        // For now, there is no need to upgrade the database.
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_SURAH_NUMBER + " INTEGER DEFAULT 0");
+            populateSuraNumber(db);
+        }
+    }
+
+    private void populateSuraNumber(SQLiteDatabase db) {
+        try (QuranDatabaseHelper quranHelper = new QuranDatabaseHelper(context)) {
+            Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    String surahName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH));
+                    int surahNumber = getSurahNumber(quranHelper, surahName);
+                    int ayahId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+                    ContentValues values = new ContentValues();
+                    values.put(COLUMN_SURAH_NUMBER, surahNumber);
+                    db.update(TABLE_NAME, values, COLUMN_ID + " = ?", new String[]{String.valueOf(ayahId)});
+                }
+                cursor.close();
+            }
+        }
+    }
+
+    private int getSurahNumber(QuranDatabaseHelper quranHelper, String surahName) {
+        SQLiteDatabase db = quranHelper.getReadableDatabase();
+        String[] columns = new String[]{QuranDatabaseHelper.COLUMN_SURAH_NUMBER};
+        String[] selectionArgs = new String[]{surahName};
+        String selection = QuranDatabaseHelper.COLUMN_SURAH + " = ?";
+        Cursor cursor = db.query(
+                QuranDatabaseHelper.TABLE_NAME,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        int surahNumber = 0;
+        if (cursor != null && cursor.moveToFirst()) {
+            surahNumber = cursor.getInt(cursor.getColumnIndexOrThrow(QuranDatabaseHelper.COLUMN_SURAH_NUMBER));
+            cursor.close();
+        }
+        db.close();
+        return surahNumber;
     }
 
     public boolean addAyah(String ayah, int ayahNumber, String surah) {
@@ -51,7 +96,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(
                 TABLE_NAME,
                 null,
-                COLUMN_AYAH + " = ? AND " + COLUMN_AYAH_NUMBER + " = ? AND " + COLUMN_SURA + " = ?",
+                COLUMN_AYAH + " = ? AND " + COLUMN_AYAH_NUMBER + " = ? AND " + COLUMN_SURAH + " = ?",
                 selectionArgs,
                 null,
                 null,
@@ -63,7 +108,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(COLUMN_AYAH, ayah);
             values.put(COLUMN_AYAH_NUMBER, ayahNumber);
-            values.put(COLUMN_SURA, surah);
+            values.put(COLUMN_SURAH, surah);
             db.insert(TABLE_NAME, null, values);
             return true;
         }
@@ -91,7 +136,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
             while (cursor.moveToNext()) {
                 result.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
                 result.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
-                result.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
+                result.put(COLUMN_SURAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH)));
                 result.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
             }
             cursor.close();
@@ -113,7 +158,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
                 row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
                 row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
                 row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
-                row.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
+                row.put(COLUMN_SURAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH)));
                 row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
                 results.add(row);
                 cursor.close();
@@ -127,7 +172,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
 
-        String orderBy = COLUMN_SURA + " ASC, " + COLUMN_AYAH_NUMBER + " ASC";
+        String orderBy = COLUMN_SURAH_NUMBER + " ASC, " + COLUMN_AYAH_NUMBER + " ASC";
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, orderBy);
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -135,10 +180,10 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
                 row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
                 row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
                 row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
-                row.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
+                row.put(COLUMN_SURAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH)));
                 row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
                 results.add(row);
-                }
+            }
             cursor.close();
         }
         db.close();
@@ -150,7 +195,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         String sqlQuery = "UPDATE " + TABLE_NAME +
                 " SET " + COLUMN_PLAY_COUNT + " = " + COLUMN_PLAY_COUNT + " + 1" +
                 " WHERE " + COLUMN_AYAH_NUMBER + " = " + ayahNumber +
-                " AND " + COLUMN_SURA + " = '" + surah + "'";
+                " AND " + COLUMN_SURAH + " = '" + surah + "'";
         db.execSQL(sqlQuery);
         db.close();
     }
@@ -187,7 +232,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
 
-        String sqlQuery = "SELECT * FROM " + TABLE_NAME +  " ORDER BY " + COLUMN_PLAY_COUNT + " DESC LIMIT " + count;
+        String sqlQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_PLAY_COUNT + " DESC LIMIT " + count;
         Cursor cursor = db.rawQuery(sqlQuery, null);
 
         if (cursor != null) {
@@ -196,7 +241,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
                 row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
                 row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
                 row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
-                row.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
+                row.put(COLUMN_SURAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH)));
                 row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
                 results.add(row);
             }
@@ -212,10 +257,10 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         List<Map<String, Object>> results = new ArrayList<>();
 
         String sqlQuery = "SELECT "
-                + COLUMN_SURA + ", SUM("
+                + COLUMN_SURAH + ", SUM("
                 + COLUMN_PLAY_COUNT + ") AS " + COLUMN_PLAY_COUNT
                 + " FROM " + TABLE_NAME
-                + " GROUP BY " + COLUMN_SURA
+                + " GROUP BY " + COLUMN_SURAH
                 + " ORDER BY " + COLUMN_PLAY_COUNT + " DESC LIMIT " + count;
 
         Cursor cursor = db.rawQuery(sqlQuery, null);
@@ -223,7 +268,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Map<String, Object> row = new HashMap<>();
-                row.put(COLUMN_SURA, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURA)));
+                row.put(COLUMN_SURAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH)));
                 row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
                 results.add(row);
             }

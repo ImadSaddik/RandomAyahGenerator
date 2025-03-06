@@ -101,7 +101,7 @@ public class DashboardActivity extends AppCompatActivity {
 
             LayoutInflater layoutInflater = getLayoutInflater();
             View view = layoutInflater.inflate(R.layout.dashboard_ayah_section_row_template, null);
-            String surahName = ayah.get(BookmarkedAyahDatabaseHelper.COLUMN_SURA).toString();
+            String surahName = ayah.get(BookmarkedAyahDatabaseHelper.COLUMN_SURAH).toString();
             TextView surahNameTextView = view.findViewById(R.id.surahNameTextView);
             surahNameTextView.setText(surahName);
 
@@ -139,7 +139,7 @@ public class DashboardActivity extends AppCompatActivity {
 
             View view = layoutInflater.inflate(R.layout.dashboard_surah_section_row_template, null);
             TextView surahNameTextView = view.findViewById(R.id.surahNameTextView);
-            String surahName = ayah.get(BookmarkedAyahDatabaseHelper.COLUMN_SURA).toString();
+            String surahName = ayah.get(BookmarkedAyahDatabaseHelper.COLUMN_SURAH).toString();
             surahNameTextView.setText(surahName);
 
             TextView playCountTextView = view.findViewById(R.id.playCountTextView);

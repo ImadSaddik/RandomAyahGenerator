@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         View ayahCardView = layoutInflater.inflate(R.layout.generated_ayah_card, null);
 
         TextView ayahCardTitle = ayahCardView.findViewById(R.id.ayahCardTitle);
-        String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURA).toString();
+        String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURAH).toString();
         ayahCardTitle.setText(surah);
 
         TextView ayahCardSubTitle = ayahCardView.findViewById(R.id.ayahCardSubTitle);
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     }
 
     private void incrementPlayCount(Map<String, Object> row) {
-        String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURA).toString();
+        String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURAH).toString();
         int ayahNumber = Integer.parseInt(row.get(BookmarkedAyahDatabaseHelper.COLUMN_AYAH_NUMBER).toString());
         bookmarkedAyahDatabaseHelper.incrementPlayCount(surah, ayahNumber);
     }

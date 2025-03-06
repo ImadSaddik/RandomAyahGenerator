@@ -1,8 +1,6 @@
 package com.example.randomayahgenerator;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -123,7 +121,7 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
 
     private void setRowTitle(View rowView, Map<String, Object> row) {
         TextView rowTitle = rowView.findViewById(R.id.rowViewActivityTitle);
-        String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURA).toString();
+        String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURAH).toString();
         rowTitle.setText(surah);
     }
 
