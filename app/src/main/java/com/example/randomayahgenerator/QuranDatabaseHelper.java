@@ -21,6 +21,10 @@ import java.util.TreeMap;
 public class QuranDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "quraan.db";
     private static final int DATABASE_VERSION = 1;
+    public static final String COLUMN_AYAH = "Ayah";
+    public static final String COLUMN_AYAH_NUMBER = "AyahNumber";
+    public static final String COLUMN_SURAH = "Surah";
+    public static final String COLUMN_SURAH_NUMBER = "SurahNumber";
     private final Context context;
 
     public QuranDatabaseHelper(Context context) {
@@ -35,7 +39,7 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         // For now, there is no need to upgrade the database.
     }
 
@@ -72,7 +76,7 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
                 "data",
-                new String[]{"Surah"},
+                new String[]{COLUMN_SURAH},
                 null,
                 null,
                 null,
@@ -82,7 +86,7 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                String surahName = cursor.getString(cursor.getColumnIndexOrThrow("Surah"));
+                String surahName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH));
                 if (!surahNames.contains(surahName)) {
                     surahNames.add(surahName);
                 }
@@ -108,8 +112,8 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
         Map<String, List<Integer>> surahAyahMap = new HashMap<>();
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                String surah = cursor.getString(cursor.getColumnIndexOrThrow("Surah"));
-                int ayahNumber = cursor.getInt(cursor.getColumnIndexOrThrow("AyahNumber"));
+                String surah = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH));
+                int ayahNumber = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER));
 
                 if (!surahAyahMap.containsKey(surah)) {
                     surahAyahMap.put(surah, new ArrayList<>());
@@ -129,11 +133,12 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
     public String getAyahText(String surah, int ayahNumber) {
         SQLiteDatabase db = getReadableDatabase();
         String[] selectionArgs = new String[]{surah, String.valueOf(ayahNumber)};
+        String selection = COLUMN_SURAH + " = ? AND " + COLUMN_AYAH_NUMBER + " = ?";
 
         Cursor cursor = db.query(
                 "data",
                 null,
-                "Surah = ? AND AyahNumber = ?",
+                selection,
                 selectionArgs,
                 null,
                 null,
@@ -142,7 +147,7 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
 
         String ayahText = "";
         if (cursor != null && cursor.moveToFirst()) {
-            ayahText = cursor.getString(cursor.getColumnIndexOrThrow("Ayah"));
+            ayahText = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH));
         }
         cursor.close();
         db.close();
