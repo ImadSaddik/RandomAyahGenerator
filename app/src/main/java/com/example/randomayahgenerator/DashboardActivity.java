@@ -66,7 +66,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void showDashboard() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getAllAyahs(-1);
+            List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getAllAyahs(-1, -1);
             List<Map<String, Object>> mostPlayedAyahs = bookmarkedAyahDatabaseHelper.getMostPlayedAyahs(5);
             List<Map<String, Object>> mostPlayedSurah = bookmarkedAyahDatabaseHelper.getMostPlayedSurah(5);
 

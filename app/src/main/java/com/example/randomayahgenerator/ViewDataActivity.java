@@ -6,7 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -23,10 +25,14 @@ import java.util.concurrent.Executors;
 public class ViewDataActivity extends AppCompatActivity implements OnDatabaseActionsListener {
     private Button addAyahButton;
     private LinearLayout rowsContainer;
+    private ScrollView rowsScrollView;
     private TextView noDataInDatabaseTextView;
     private ImageView returnToHomeScreenButton;
     private AddAyahModalHandler addAyahModalHandler;
     private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
+    private final int pageSize = 10;
+    private int offset = 0;
+    private boolean isLoadingNewRows = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,7 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
         instantiateViews();
         instantiateObjects();
         setClickListeners();
+        setInfiniteScrolling();
         populateRowsContainer();
         stateManagement(savedInstanceState);
     }
@@ -71,6 +78,7 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
 
     private void instantiateViews() {
         rowsContainer = findViewById(R.id.rowsContainer);
+        rowsScrollView = findViewById(R.id.rowsScrollView);
         addAyahButton = findViewById(R.id.addAyahButton);
         noDataInDatabaseTextView = findViewById(R.id.noDataInDatabaseText);
         returnToHomeScreenButton = findViewById(R.id.returnToHomeScreenButton);
@@ -90,19 +98,55 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
         });
     }
 
+    private void setInfiniteScrolling() {
+        rowsScrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (!isLoadingNewRows && isAtBottom(rowsScrollView, rowsContainer) && isMoreDataAvailable()) {
+                loadMoreData();
+            }
+        });
+    }
+
+    private boolean isMoreDataAvailable() {
+        int ayahCount = bookmarkedAyahDatabaseHelper.getCountOfAyahs();
+        return ayahCount > offset + pageSize;
+    }
+
+    private boolean isAtBottom(ScrollView scrollView, LinearLayout rowsContainer) {
+        if (scrollView.getChildCount() == 0) {
+            return false;
+        }
+        int diff = (rowsContainer.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
+        return diff <= 0;
+    }
+
+    private void loadMoreData() {
+        isLoadingNewRows = true;
+        offset += pageSize;
+        List<Map<String, Object>> ayahs = bookmarkedAyahDatabaseHelper.getAllAyahs(pageSize, offset);
+        addAyahsToLayout(ayahs);
+        isLoadingNewRows = false;
+    }
+
+    private void addAyahsToLayout(List<Map<String, Object>> ayahs) {
+        for (Map<String, Object> ayah : ayahs) {
+            View view = getRowView(ayah);
+            rowsContainer.addView(view);
+        }
+    }
+
     private void populateRowsContainer() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getAllAyahs(10);
+            List<Map<String, Object>> ayahs = bookmarkedAyahDatabaseHelper.getAllAyahs(pageSize, 0);
             runOnUiThread(() -> {
                 rowsContainer.removeAllViews();
 
-                for (Map<String, Object> row : rows) {
-                    View view = getRowView(row);
+                for (Map<String, Object> ayah : ayahs) {
+                    View view = getRowView(ayah);
                     rowsContainer.addView(view);
                 }
 
-                showHideNoDataInDatabaseTextView(rows.isEmpty());
+                showHideNoDataInDatabaseTextView(ayahs.isEmpty());
             });
         });
 
