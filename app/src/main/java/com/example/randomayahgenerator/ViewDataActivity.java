@@ -93,7 +93,7 @@ public class ViewDataActivity extends AppCompatActivity implements OnDatabaseAct
     private void populateRowsContainer() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getAllAyahs();
+            List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getAllAyahs(10);
             runOnUiThread(() -> {
                 rowsContainer.removeAllViews();
 

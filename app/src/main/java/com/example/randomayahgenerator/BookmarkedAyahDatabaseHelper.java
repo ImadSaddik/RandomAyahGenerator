@@ -168,12 +168,16 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
-    public List<Map<String, Object>> getAllAyahs() {
+    public List<Map<String, Object>> getAllAyahs(int numberOfRows) {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
 
         String orderBy = COLUMN_SURAH_NUMBER + " ASC, " + COLUMN_AYAH_NUMBER + " ASC";
-        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, orderBy);
+        String limit = String.valueOf(numberOfRows);
+        if (numberOfRows == -1) {
+            limit = null;
+        }
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, orderBy, limit);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Map<String, Object> row = new HashMap<>();
