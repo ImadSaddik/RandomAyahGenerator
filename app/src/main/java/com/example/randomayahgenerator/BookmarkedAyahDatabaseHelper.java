@@ -127,7 +127,8 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
 
-        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+        String orderBy = COLUMN_SURA + " ASC, " + COLUMN_AYAH_NUMBER + " ASC";
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, orderBy);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Map<String, Object> row = new HashMap<>();
