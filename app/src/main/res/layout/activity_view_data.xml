@@ -41,6 +41,7 @@
     </RelativeLayout>
 
     <ScrollView
+        android:id="@+id/rowsScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -53,8 +54,8 @@
             android:id="@+id/rowsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="96dp"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:paddingBottom="96dp" />
     </ScrollView>
 
     <Button
