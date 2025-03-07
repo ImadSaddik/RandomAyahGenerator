@@ -46,19 +46,19 @@ Displays statistics like the most played Ayahs, most played Surahs, and total pl
 <img src="screenshots/dashboard_light_2.jpg" alt="Dashboard (Light)" width="250"/>
 <img src="screenshots/dashboard_dark_2.jpg" alt="Dashboard (Dark)" width="250"/>
 
-### 📂 Navigation drawer
+### Navigation drawer
 
 Facilitates smooth navigation between different activities.  
 <img src="screenshots/navigation_drawer_light.jpg" alt="Navigation Drawer (Light)" width="250"/>
 <img src="screenshots/navigation_drawer_dark.jpg" alt="Navigation Drawer (Dark)" width="250"/>
 
-### 🗄️ Database management
+### Database management
 
 - **Save Database:** Export the bookmarked Ayahs database to a file.  
 - **Load Database:** Import a previously saved database, replacing the current bookmarks.  
 - **Delete All Data:** Clear all bookmarked Ayahs.
 
-## ⚙️ Setup and usage
+## Setup and usage
 
 1. **Clone the repository:**
 
@@ -70,7 +70,7 @@ Facilitates smooth navigation between different activities.
 
 3. **Build and run the application** on an emulator or physical device.
 
-## 📚 Key concepts
+## Key concepts
 
 I learned a lot while working on this project. First, I made wireframes for each part of the app before writing any code. This helped me see how the app would look and made it easier to build in Android Studio.  
 
