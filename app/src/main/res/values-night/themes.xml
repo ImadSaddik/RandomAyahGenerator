@@ -21,6 +21,7 @@
         <item name="buttonBackgroundColor">@color/button_background_color_light</item>
         <item name="dialogBackgroundColor">@color/dialog_background_color_dark</item>
         <item name="ayahCardBackgroundColor">@color/ayah_card_background_color_dark</item>
+        <item name="selectedAyahNumberBackgroundColor">@color/selected_ayah_background_color_dark</item>
         <item name="faintStroke">@color/faint_stroke_dark</item>
         <item name="pressedState">@color/pressed_state_dark</item>
 

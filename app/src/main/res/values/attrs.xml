@@ -9,6 +9,7 @@
     <attr name="dialogBackgroundColor" format="color" />
     <attr name="dropDownStrokeColor" format="color" />
     <attr name="ayahCardBackgroundColor" format="color" />
+    <attr name="selectedAyahNumberBackgroundColor" format="color" />
     <attr name="faintStroke" format="color" />
     <attr name="pressedState" format="color" />
 </resources>

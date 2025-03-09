@@ -34,6 +34,9 @@
     <color name="ayah_card_background_color_light">#FFFFFF</color>
     <color name="ayah_card_background_color_dark">#1f2324</color>
 
+    <color name="selected_ayah_background_color_light">#E8E8E8</color>
+    <color name="selected_ayah_background_color_dark">#2A3031</color>
+
     <color name="faint_stroke_light">#27000000</color>
     <color name="faint_stroke_dark">#27FFFFFF</color>
 
