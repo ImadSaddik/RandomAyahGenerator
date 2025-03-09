@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -259,13 +260,14 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
     private void addAyahCardsToContainer(List<Map<String, Object>> rows) {
         for (int i = 0; i < rows.size(); i++) {
+            Map<String, Object> row = rows.get(i);
             Object columnID = rows.get(i).get(BookmarkedAyahDatabaseHelper.COLUMN_ID);
             if (columnID != null) {
                 int ayahID = Integer.parseInt(columnID.toString());
                 generatedAyahIDs.add(ayahID);
             }
 
-            View ayahCard = getAyahCard(rows.get(i));
+            View ayahCard = getAyahCard(row);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -276,7 +278,17 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
             ayahCard.setLayoutParams(params);
             generatedAyahsContainer.addView(ayahCard);
-            incrementPlayCount(rows.get(i));
+            incrementPlayCount(row);
+
+            ayahCard.setOnClickListener(v -> {
+                String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURAH).toString();
+                int ayahNumber =  Integer.parseInt(row.get(BookmarkedAyahDatabaseHelper.COLUMN_AYAH_NUMBER).toString());
+
+                Intent intent = new Intent(this, SurahViewer.class);
+                intent.putExtra(BookmarkedAyahDatabaseHelper.COLUMN_SURAH, surah);
+                intent.putExtra(BookmarkedAyahDatabaseHelper.COLUMN_AYAH_NUMBER, ayahNumber);
+                startActivity(intent);
+            });
         }
         updateUIBasedOnAyahCount();
     }

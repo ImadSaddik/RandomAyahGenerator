@@ -155,4 +155,30 @@ public class QuranDatabaseHelper extends SQLiteOpenHelper {
 
         return ayahText;
     }
+
+    public List<String> getAyahsBySurahName(String surah) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] selectionArgs = new String[]{surah};
+        String selection = COLUMN_SURAH + " = ?";
+        Cursor cursor = db.query(
+                TABLE_NAME,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        List<String> ayahs = new ArrayList<>();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String ayah = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH));
+                ayahs.add(ayah);
+            }
+            cursor.close();
+        }
+        db.close();
+        return ayahs;
+    }
 }
