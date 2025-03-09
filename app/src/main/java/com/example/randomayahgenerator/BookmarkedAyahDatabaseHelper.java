@@ -9,8 +9,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "quran_data.db";
@@ -149,23 +152,79 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
 
-        for (int i = 0; i < count; i++) {
-            String sqlQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY RANDOM() LIMIT " + count;
-            Cursor cursor = db.rawQuery(sqlQuery, null);
+        List<Integer> allIds = getAllIds(db);
+        if (allIds.isEmpty()) {
+            db.close();
+            return results;
+        }
 
-            if (cursor != null && cursor.moveToFirst()) {
+        Set<Integer> selectedIds = getRandomIds(allIds, count);
+        String sqlQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + " IN (" + getPlaceHolders(selectedIds) + ")";
+        String[] selectionArgs = getSelectionArgs(selectedIds);
+        Cursor cursor = db.rawQuery(sqlQuery, selectionArgs);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
                 Map<String, Object> row = new HashMap<>();
                 row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
                 row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
                 row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
                 row.put(COLUMN_SURAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH)));
+                row.put(COLUMN_SURAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SURAH_NUMBER)));
                 row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
                 results.add(row);
-                cursor.close();
             }
+            cursor.close();
         }
+
         db.close();
         return results;
+    }
+
+    private List<Integer> getAllIds(SQLiteDatabase db) {
+        List<Integer> allIds = new ArrayList<>();
+        Cursor idCursor = db.rawQuery("SELECT " + COLUMN_ID + " FROM " + TABLE_NAME, null);
+
+        if (idCursor != null) {
+            while (idCursor.moveToNext()) {
+                allIds.add(idCursor.getInt(0));
+            }
+            idCursor.close();
+        }
+        return allIds;
+    }
+
+    private Set<Integer> getRandomIds(List<Integer> allIds, int count) {
+        Set<Integer> selectedIds = new HashSet<>();
+        Random random = new Random();
+
+        for (int i = 0; i < count; i++) {
+            Integer randomId;
+            do {
+                int randomIndex = random.nextInt(allIds.size());
+                randomId = allIds.get(randomIndex);
+            } while (selectedIds.contains(randomId));
+
+            selectedIds.add(randomId);
+        }
+        return selectedIds;
+    }
+
+    private String getPlaceHolders(Set<Integer> selectedIds) {
+        StringBuilder placeholders = new StringBuilder();
+        for (int i = 0; i < selectedIds.size(); i++) {
+            placeholders.append(i == 0 ? "?" : ",?");
+        }
+        return placeholders.toString();
+    }
+
+    private String[] getSelectionArgs(Set<Integer> selectedIds) {
+        String[] selectionArgs = new String[selectedIds.size()];
+        int index = 0;
+        for (Integer id : selectedIds) {
+            selectionArgs[index++] = String.valueOf(id);
+        }
+        return selectionArgs;
     }
 
     public List<Map<String, Object>> getAllAyahs(int numberOfRows, int offset) {
