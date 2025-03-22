@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -231,7 +232,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
 
-        String orderBy = COLUMN_SURAH_NUMBER + " ASC, " + COLUMN_AYAH_NUMBER + " ASC";
+        String orderBy = COLUMN_SURAH_NUMBER + " ASC";
         String limit = offset + "," + numberOfRows;
         if (numberOfRows == -1 || offset == -1) {
             limit = null;
