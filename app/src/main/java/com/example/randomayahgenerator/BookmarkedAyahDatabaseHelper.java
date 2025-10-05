@@ -35,13 +35,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTableQuery = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_AYAH + " TEXT NOT NULL, " +
-                COLUMN_AYAH_NUMBER + " INTEGER NOT NULL, " +
-                COLUMN_SURAH + " TEXT NOT NULL, " +
-                COLUMN_SURAH_NUMBER + " INTEGER DEFAULT 0," +
-                COLUMN_PLAY_COUNT + " INTEGER DEFAULT 0)";
+        String createTableQuery = "CREATE TABLE " + TABLE_NAME + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_AYAH + " TEXT NOT NULL, " + COLUMN_AYAH_NUMBER + " INTEGER NOT NULL, " + COLUMN_SURAH + " TEXT NOT NULL, " + COLUMN_SURAH_NUMBER + " INTEGER DEFAULT 0," + COLUMN_PLAY_COUNT + " INTEGER DEFAULT 0)";
 
         db.execSQL(createTableQuery);
     }
@@ -76,15 +70,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         String[] columns = new String[]{QuranDatabaseHelper.COLUMN_SURAH_NUMBER};
         String[] selectionArgs = new String[]{surahName};
         String selection = QuranDatabaseHelper.COLUMN_SURAH + " = ?";
-        Cursor cursor = db.query(
-                QuranDatabaseHelper.TABLE_NAME,
-                columns,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
+        Cursor cursor = db.query(QuranDatabaseHelper.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
         int surahNumber = 0;
         if (cursor != null && cursor.moveToFirst()) {
             surahNumber = cursor.getInt(cursor.getColumnIndexOrThrow(QuranDatabaseHelper.COLUMN_SURAH_NUMBER));
@@ -97,15 +83,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
     public boolean addAyah(String ayah, int ayahNumber, String surah) {
         SQLiteDatabase db = getWritableDatabase();
         String[] selectionArgs = new String[]{ayah, String.valueOf(ayahNumber), surah};
-        Cursor cursor = db.query(
-                TABLE_NAME,
-                null,
-                COLUMN_AYAH + " = ? AND " + COLUMN_AYAH_NUMBER + " = ? AND " + COLUMN_SURAH + " = ?",
-                selectionArgs,
-                null,
-                null,
-                null
-        );
+        Cursor cursor = db.query(TABLE_NAME, null, COLUMN_AYAH + " = ? AND " + COLUMN_AYAH_NUMBER + " = ? AND " + COLUMN_SURAH + " = ?", selectionArgs, null, null, null);
 
         boolean ifRowExists = cursor.getCount() != 0;
         if (!ifRowExists) {
@@ -125,15 +103,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
     public Map<String, Object> getAyahByID(int ayahID) {
         SQLiteDatabase db = getReadableDatabase();
         String[] selectionArgs = new String[]{String.valueOf(ayahID)};
-        Cursor cursor = db.query(
-                TABLE_NAME,
-                null,
-                COLUMN_ID + " = ?",
-                selectionArgs,
-                null,
-                null,
-                null
-        );
+        Cursor cursor = db.query(TABLE_NAME, null, COLUMN_ID + " = ?", selectionArgs, null, null, null);
 
         Map<String, Object> result = new HashMap<>();
         if (cursor != null) {
@@ -153,16 +123,19 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
 
-        List<Integer> allIds = getAllIds(db);
-        if (allIds.isEmpty()) {
-            db.close();
-            return results;
-        }
+        String orderBy = COLUMN_PLAY_COUNT + " ASC";
+        String limit = String.valueOf(count);
 
-        Set<Integer> selectedIds = getRandomIds(allIds, count);
-        String sqlQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + " IN (" + getPlaceHolders(selectedIds) + ")";
-        String[] selectionArgs = getSelectionArgs(selectedIds);
-        Cursor cursor = db.rawQuery(sqlQuery, selectionArgs);
+        Cursor cursor = db.query(
+                TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                orderBy,
+                limit
+        );
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -180,52 +153,6 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
 
         db.close();
         return results;
-    }
-
-    private List<Integer> getAllIds(SQLiteDatabase db) {
-        List<Integer> allIds = new ArrayList<>();
-        Cursor idCursor = db.rawQuery("SELECT " + COLUMN_ID + " FROM " + TABLE_NAME, null);
-
-        if (idCursor != null) {
-            while (idCursor.moveToNext()) {
-                allIds.add(idCursor.getInt(0));
-            }
-            idCursor.close();
-        }
-        return allIds;
-    }
-
-    private Set<Integer> getRandomIds(List<Integer> allIds, int count) {
-        Set<Integer> selectedIds = new HashSet<>();
-        Random random = new Random();
-
-        for (int i = 0; i < count; i++) {
-            Integer randomId;
-            do {
-                int randomIndex = random.nextInt(allIds.size());
-                randomId = allIds.get(randomIndex);
-            } while (selectedIds.contains(randomId));
-
-            selectedIds.add(randomId);
-        }
-        return selectedIds;
-    }
-
-    private String getPlaceHolders(Set<Integer> selectedIds) {
-        StringBuilder placeholders = new StringBuilder();
-        for (int i = 0; i < selectedIds.size(); i++) {
-            placeholders.append(i == 0 ? "?" : ",?");
-        }
-        return placeholders.toString();
-    }
-
-    private String[] getSelectionArgs(Set<Integer> selectedIds) {
-        String[] selectionArgs = new String[selectedIds.size()];
-        int index = 0;
-        for (Integer id : selectedIds) {
-            selectionArgs[index++] = String.valueOf(id);
-        }
-        return selectionArgs;
     }
 
     public List<Map<String, Object>> getAllAyahs(int numberOfRows, int offset) {
@@ -256,10 +183,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
 
     public void incrementPlayCount(String surah, int ayahNumber) {
         SQLiteDatabase db = getWritableDatabase();
-        String sqlQuery = "UPDATE " + TABLE_NAME +
-                " SET " + COLUMN_PLAY_COUNT + " = " + COLUMN_PLAY_COUNT + " + 1" +
-                " WHERE " + COLUMN_AYAH_NUMBER + " = " + ayahNumber +
-                " AND " + COLUMN_SURAH + " = '" + surah + "'";
+        String sqlQuery = "UPDATE " + TABLE_NAME + " SET " + COLUMN_PLAY_COUNT + " = " + COLUMN_PLAY_COUNT + " + 1" + " WHERE " + COLUMN_AYAH_NUMBER + " = " + ayahNumber + " AND " + COLUMN_SURAH + " = '" + surah + "'";
         db.execSQL(sqlQuery);
         db.close();
     }
@@ -320,12 +244,7 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
 
-        String sqlQuery = "SELECT "
-                + COLUMN_SURAH + ", SUM("
-                + COLUMN_PLAY_COUNT + ") AS " + COLUMN_PLAY_COUNT
-                + " FROM " + TABLE_NAME
-                + " GROUP BY " + COLUMN_SURAH
-                + " ORDER BY " + COLUMN_PLAY_COUNT + " DESC LIMIT " + count;
+        String sqlQuery = "SELECT " + COLUMN_SURAH + ", SUM(" + COLUMN_PLAY_COUNT + ") AS " + COLUMN_PLAY_COUNT + " FROM " + TABLE_NAME + " GROUP BY " + COLUMN_SURAH + " ORDER BY " + COLUMN_PLAY_COUNT + " DESC LIMIT " + count;
 
         Cursor cursor = db.rawQuery(sqlQuery, null);
 
