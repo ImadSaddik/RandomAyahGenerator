@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -121,45 +122,32 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
 
     public List<Map<String, Object>> getRandomAyahs(int count) {
         SQLiteDatabase db = getReadableDatabase();
-        List<Map<String, Object>> results = new ArrayList<>();
-        Set<String> usedSurahs = new HashSet<>();
+        List<Map<String, Object>> bestAyahFromEachSurah = new ArrayList<>();
 
-        String orderBy = COLUMN_PLAY_COUNT + " ASC";
-        Cursor cursor = db.query(
-                TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                orderBy
-        );
+        String sqlQuery = "SELECT * FROM (" +
+                "SELECT *, ROW_NUMBER() OVER(PARTITION BY " + COLUMN_SURAH + " ORDER BY " + COLUMN_PLAY_COUNT + " ASC) as rn " +
+                "FROM " + TABLE_NAME +
+                ") WHERE rn = 1";
+
+        Cursor cursor = db.rawQuery(sqlQuery, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                if (results.size() >= count) {
-                    break;
-                }
-
-                String surahName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH));
-                if (!usedSurahs.contains(surahName)) {
-                    Map<String, Object> row = new HashMap<>();
-                    row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
-                    row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
-                    row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
-                    row.put(COLUMN_SURAH, surahName);
-                    row.put(COLUMN_SURAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SURAH_NUMBER)));
-                    row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
-                    results.add(row);
-
-                    usedSurahs.add(surahName);
-                }
+                Map<String, Object> row = new HashMap<>();
+                row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
+                row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
+                row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
+                row.put(COLUMN_SURAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH)));
+                row.put(COLUMN_SURAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SURAH_NUMBER)));
+                row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
+                bestAyahFromEachSurah.add(row);
             }
             cursor.close();
         }
-
         db.close();
-        return results;
+
+        Collections.shuffle(bestAyahFromEachSurah);
+        return bestAyahFromEachSurah.subList(0, count);
     }
 
     public List<Map<String, Object>> getAllAyahs(int numberOfRows, int offset) {
