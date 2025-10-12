@@ -122,10 +122,9 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
     public List<Map<String, Object>> getRandomAyahs(int count) {
         SQLiteDatabase db = getReadableDatabase();
         List<Map<String, Object>> results = new ArrayList<>();
+        Set<String> usedSurahs = new HashSet<>();
 
         String orderBy = COLUMN_PLAY_COUNT + " ASC";
-        String limit = String.valueOf(count);
-
         Cursor cursor = db.query(
                 TABLE_NAME,
                 null,
@@ -133,20 +132,28 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
                 null,
                 null,
                 null,
-                orderBy,
-                limit
+                orderBy
         );
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                Map<String, Object> row = new HashMap<>();
-                row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
-                row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
-                row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
-                row.put(COLUMN_SURAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH)));
-                row.put(COLUMN_SURAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SURAH_NUMBER)));
-                row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
-                results.add(row);
+                if (results.size() >= count) {
+                    break;
+                }
+
+                String surahName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURAH));
+                if (!usedSurahs.contains(surahName)) {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put(COLUMN_ID, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
+                    row.put(COLUMN_AYAH, cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AYAH)));
+                    row.put(COLUMN_AYAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_AYAH_NUMBER)));
+                    row.put(COLUMN_SURAH, surahName);
+                    row.put(COLUMN_SURAH_NUMBER, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SURAH_NUMBER)));
+                    row.put(COLUMN_PLAY_COUNT, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAY_COUNT)));
+                    results.add(row);
+
+                    usedSurahs.add(surahName);
+                }
             }
             cursor.close();
         }
