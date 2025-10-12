@@ -125,9 +125,9 @@ public class BookmarkedAyahDatabaseHelper extends SQLiteOpenHelper {
         List<Map<String, Object>> bestAyahFromEachSurah = new ArrayList<>();
 
         String sqlQuery = "SELECT * FROM (" +
-                "SELECT *, ROW_NUMBER() OVER(PARTITION BY " + COLUMN_SURAH + " ORDER BY " + COLUMN_PLAY_COUNT + " ASC) as rn " +
+                "SELECT *, ROW_NUMBER() OVER(PARTITION BY " + COLUMN_SURAH + " ORDER BY " + COLUMN_PLAY_COUNT + " ASC) as row_number " +
                 "FROM " + TABLE_NAME +
-                ") WHERE rn = 1";
+                ") WHERE row_number = 1";
 
         Cursor cursor = db.rawQuery(sqlQuery, null);
 
