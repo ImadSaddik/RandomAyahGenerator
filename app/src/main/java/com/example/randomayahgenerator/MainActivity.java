@@ -1,6 +1,8 @@
 package com.example.randomayahgenerator;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.core.view.ViewCompat;
@@ -32,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     private DrawerLayout drawerLayout;
     private NavigationView rightNavigationView;
     private ArrayList<Integer> generatedAyahIDs;
-    private ImageView rightNavigationDrawerIcon;
+    private ImageView rightNavigationDrawerIcon, themeToggleButton;
+    private SharedPreferences sharedPreferences;
     private GestureDetectorCompat gestureDetector;
     private LinearLayout generatedAyahsContainer;
     private AddAyahModalHandler addAyahModalHandler;
@@ -44,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPreferences = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+        applyTheme();
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -56,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         instantiateViews();
         instantiateObjects();
         setClickListeners();
+        updateThemeIcon();
 
         handleNavigationDrawersVisibility.setNavigationDrawerListeners();
         updateUIBasedOnAyahCount();
@@ -112,10 +120,35 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         }
     }
 
+    private void applyTheme() {
+        String themeMode = sharedPreferences.getString("ThemeMode", "System");
+        switch (themeMode) {
+            case "Light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "Dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case "System":
+            default:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
+    }
+
+    private void updateThemeIcon() {
+        if (getCurrentNightMode() == Configuration.UI_MODE_NIGHT_YES) {
+            themeToggleButton.setImageResource(R.drawable.light_mode_icon);
+        } else {
+            themeToggleButton.setImageResource(R.drawable.dark_mode_icon);
+        }
+    }
+
     private void instantiateViews() {
         drawerLayout = findViewById(R.id.drawerLayout);
         rightNavigationView = findViewById(R.id.rightNavigationDrawer);
         rightNavigationDrawerIcon = findViewById(R.id.rightNavigationDrawerIcon);
+        themeToggleButton = findViewById(R.id.lightDarkModesIcon);
 
         noAyahFoundText = findViewById(R.id.noAyahFoundText);
         generationTypeHintText = findViewById(R.id.generationTypeHintText);
@@ -194,6 +227,28 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
             List<Map<String, Object>> rows = bookmarkedAyahDatabaseHelper.getRandomAyahs(2);
             addAyahCardsToContainer(rows);
         });
+        themeToggleButton.setOnClickListener(v -> toggleTheme());
+    }
+
+    private void toggleTheme() {
+        int currentNightMode = getCurrentNightMode();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            editor.putString("ThemeMode", "Light");
+            Toast.makeText(this, "Light mode enabled", Toast.LENGTH_SHORT).show();
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            editor.putString("ThemeMode", "Dark");
+            Toast.makeText(this, "Dark mode enabled", Toast.LENGTH_SHORT).show();
+        }
+
+        editor.apply();
+    }
+
+    private int getCurrentNightMode() {
+        return getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     }
 
     private View getAyahCard(Map<String, Object> row) {

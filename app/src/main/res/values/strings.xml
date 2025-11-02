@@ -27,4 +27,5 @@
     <string name="play_prefix">مَرَّة</string>
     <string name="add_all_ayahs_in_surah">أَضِفِ السُّورَةَ كَامِلَةً</string>
     <string name="surah_prefix">سُورَةٌ</string>
+    <string name="light_dark_modes_icon_toggle">Switch the app theme to dark or light mode by clicking on this icon</string>
 </resources>
