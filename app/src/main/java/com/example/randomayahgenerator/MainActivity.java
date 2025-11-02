@@ -32,14 +32,15 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements OnDatabaseActionsListener {
+    private View mainContentLayout;
     private DrawerLayout drawerLayout;
     private NavigationView rightNavigationView;
     private ArrayList<Integer> generatedAyahIDs;
-    private ImageView rightNavigationDrawerIcon, themeToggleButton;
     private SharedPreferences sharedPreferences;
     private GestureDetectorCompat gestureDetector;
     private LinearLayout generatedAyahsContainer;
     private AddAyahModalHandler addAyahModalHandler;
+    private ImageView rightNavigationDrawerIcon, themeToggleButton;
     private TextView noAyahFoundText, generationTypeHintText;
     private BookmarkedAyahDatabaseHelper bookmarkedAyahDatabaseHelper;
     private HandleNavigationDrawersVisibility handleNavigationDrawersVisibility;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         instantiateObjects();
         setClickListeners();
         updateThemeIcon();
+        setupDrawerAnimation();
 
         handleNavigationDrawersVisibility.setNavigationDrawerListeners();
         updateUIBasedOnAyahCount();
@@ -144,6 +146,30 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         }
     }
 
+    private void setupDrawerAnimation() {
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+                int slideDirection = -1;
+                final float translationX = drawerView.getWidth() * slideOffset * slideDirection;
+                mainContentLayout.setTranslationX(translationX);
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                mainContentLayout.setTranslationX(0);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+            }
+        });
+    }
+
     private void instantiateViews() {
         drawerLayout = findViewById(R.id.drawerLayout);
         rightNavigationView = findViewById(R.id.rightNavigationDrawer);
@@ -158,6 +184,8 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
         repeatGenerationButton = findViewById(R.id.repeatGenerationButton);
 
         generatedAyahsContainer = findViewById(R.id.generatedAyahsContainer);
+
+        mainContentLayout = findViewById(R.id.mainContentLayout);
     }
 
     private void instantiateObjects() {
