@@ -191,8 +191,8 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
     private void instantiateObjects() {
         generatedAyahIDs = new ArrayList<>();
         handleNavigationDrawersVisibility = new HandleNavigationDrawersVisibility(
-            rightNavigationDrawerIcon,
-            drawerLayout
+                rightNavigationDrawerIcon,
+                drawerLayout
         );
         HandleSwipeAndDrawers handleSwipeAndDrawers = new HandleSwipeAndDrawers(drawerLayout);
         gestureDetector = new GestureDetectorCompat(
@@ -289,7 +289,9 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
         TextView ayahCardSubTitle = ayahCardView.findViewById(R.id.ayahCardSubTitle);
         String ayahNumber = row.get(BookmarkedAyahDatabaseHelper.COLUMN_AYAH_NUMBER).toString();
-        String subtitle = getString(R.string.ayah_prefix) + ": " + ayahNumber;
+
+        String subtitle = getString(R.string.ayah_prefix) + ": " + ayahNumber +
+                " | " + getString(R.string.play_count) + ": " + row.get(BookmarkedAyahDatabaseHelper.COLUMN_PLAY_COUNT);
         ayahCardSubTitle.setText(subtitle);
 
         TextView ayahCardContent = ayahCardView.findViewById(R.id.ayahCardContent);
@@ -365,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements OnDatabaseActions
 
             ayahCard.setOnClickListener(v -> {
                 String surah = row.get(BookmarkedAyahDatabaseHelper.COLUMN_SURAH).toString();
-                int ayahNumber =  Integer.parseInt(row.get(BookmarkedAyahDatabaseHelper.COLUMN_AYAH_NUMBER).toString());
+                int ayahNumber = Integer.parseInt(row.get(BookmarkedAyahDatabaseHelper.COLUMN_AYAH_NUMBER).toString());
 
                 Intent intent = new Intent(this, SurahViewer.class);
                 intent.putExtra(BookmarkedAyahDatabaseHelper.COLUMN_SURAH, surah);
