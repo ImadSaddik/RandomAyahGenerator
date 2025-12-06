@@ -3,7 +3,8 @@
     android:id="@+id/rootLayer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/backgroundColor"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/surah_ayah_card_background"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:padding="16dp">

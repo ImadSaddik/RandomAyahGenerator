@@ -1,7 +1,11 @@
 package com.example.randomayahgenerator;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -88,15 +92,34 @@ public class SurahViewer extends AppCompatActivity {
 
     private View getRowView(String ayahContent, int currentAyahNumber) {
         LayoutInflater layoutInflater = getLayoutInflater();
-        View view = layoutInflater.inflate(R.layout.row_design_for_surah_view_activity, null);
+        View view = layoutInflater.inflate(R.layout.row_design_for_surah_view_activity, ayahsContainer, false);
         setRowAyahNumber(view, currentAyahNumber);
         setRowAyahContent(view, ayahContent);
+        setLongClickListener(view, ayahContent);
+
         if (ayahNumber == currentAyahNumber) {
             LinearLayout linearLayout = view.findViewById(R.id.rootLayer);
-            linearLayout.setBackgroundResource(R.drawable.selected_ayah_number_background);
+            linearLayout.setBackgroundResource(R.drawable.selected_ayah_clickable_background);
             selectedAyahToScrollTo = view;
         }
         return view;
+    }
+
+    private void setLongClickListener(View rowView, String ayahContent) {
+        rowView.setOnLongClickListener(v -> {
+            v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            copyToClipboard(ayahContent);
+            return true;
+        });
+    }
+
+    private void copyToClipboard(String text) {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Ayah", text);
+        if (clipboard != null) {
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this, "Ayah copied to clipboard", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setRowAyahNumber(View rowView, int ayahNumber) {
